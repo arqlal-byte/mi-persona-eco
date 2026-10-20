@@ -1258,7 +1258,7 @@ function cargarActividadesFamiliaresPersonaECO_(){
         const imagen=a.imagenPortadaId
           ? `https://drive.google.com/thumbnail?id=${encodeURIComponent(a.imagenPortadaId)}&sz=w1200`
           : (a.imagenPortada||'');
-        return `<article class="familyActivityCard">
+        return `<article class="familyActivityCard" data-id="${esc(a.id)}">
           ${imagen?`<img class="familyActivityCover" src="${esc(imagen)}" alt="Portada de ${esc(a.titulo||'Actividad familiar')}">`:''}
           <div class="familyActivityBody">
             <div class="familyActivityTitle">${esc(a.titulo||'')}</div>
@@ -1919,5 +1919,6 @@ iniciarDesdeUrl_();
   observador.observe(raiz,{childList:true,subtree:true});
 })();
 </script>
+<script src="./eco-portadas.js"></script>
 </body>
 </html>

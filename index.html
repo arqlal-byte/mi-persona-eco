@@ -546,7 +546,21 @@ body{line-height:1.4;overflow-wrap:break-word}
  #home .activity.activityFeed .activityValidationBox{font-size:15px!important;min-height:42px;padding:9px 12px}
 }
 </style>
-</head>
+<style>
+/* Tipografía exclusiva de Perfil. */
+#ecoPerfilResultados{--eco-font-min:16px;--eco-font-destacado:16px;font-size:16px;line-height:1.5}
+#ecoPerfilResultados .ecoPerfilIdentity h2{font-size:clamp(22px,3vw,28px)}
+#ecoPerfilResultados .ecoPerfilIdentity p{font-size:16px}
+#ecoPerfilResultados .ecoPerfilEyebrow,#ecoPerfilResultados .ecoPerfilChips span,#ecoPerfilResultados .ecoPerfilCount{font-size:12px}
+#ecoPerfilResultados .ecoPerfilIntro h3,#ecoPerfilResultados .ecoPerfilCardHead h3{font-size:22px}
+#ecoPerfilResultados .ecoPerfilIntro p,#ecoPerfilResultados .ecoPerfilMetricLine,#ecoPerfilResultados .ecoPerfilMetricLine strong,#ecoPerfilResultados .ecoPerfilFocus p,#ecoPerfilResultados .ecoPerfilFocusRow,#ecoPerfilResultados .ecoPerfilEmpty{font-size:16px}
+#ecoPerfilResultados .ecoPerfilStat span{font-size:14px}
+#ecoPerfilResultados .ecoPerfilStat strong{font-size:26px}
+#ecoPerfilResultados .ecoPerfilStat small,#ecoPerfilResultados .ecoPerfilNote,#ecoPerfilResultados .ecoPerfilFoot{font-size:14px}
+#ecoPerfilResultados .ecoPerfilDetails summary{font-size:16px}
+#ecoPerfilResultados .ecoPerfilAvatar{font-size:26px}
+@media(max-width:650px){#ecoPerfilResultados .ecoPerfilIntro h3,#ecoPerfilResultados .ecoPerfilCardHead h3{font-size:20px}}
+</style></head>
 <body>
 
 <div id="peWelcome" class="peWelcomeHidden" role="status" aria-live="polite">
@@ -1861,8 +1875,8 @@ iniciarDesdeUrl_();
       function xy(i,f){var a=-Math.PI/2+Math.PI*2*i/N;return [cx+Math.cos(a)*r*f,cy+Math.sin(a)*r*f];}
       function vertices(f){return competencias.map(function(c,i){return xy(i,typeof f==='function'?f(c):f).map(function(v){return v.toFixed(2);}).join(',');}).join(' ');}
       var seccion=document.createElement('section');seccion.id='peRadialIndependiente';seccion.className='ecoPerfilCard';
-      var titulo=document.createElement('h3');titulo.textContent='Mis competencias · gráfica radial';titulo.style.cssText='font-size:38px;line-height:1.25;margin:0 0 14px;color:#263947';seccion.appendChild(titulo);
-      var ayuda=document.createElement('p');ayuda.textContent='Selecciona una competencia para consultar su resultado.';ayuda.style.cssText='font-size:38px;line-height:1.4;color:#52616b';seccion.appendChild(ayuda);
+      var titulo=document.createElement('h3');titulo.textContent='Mis competencias · gráfica radial';titulo.style.cssText='font-size:22px;line-height:1.25;margin:0 0 14px;color:#263947';seccion.appendChild(titulo);
+      var ayuda=document.createElement('p');ayuda.textContent='Selecciona una competencia para consultar su resultado.';ayuda.style.cssText='font-size:16px;line-height:1.4;color:#52616b';seccion.appendChild(ayuda);
       var grafico=crearSVG('svg',{viewBox:'0 0 360 350',role:'img','aria-label':'Gráfica radial de resultados publicados'},seccion);
       grafico.style.cssText='display:block;width:100%;max-width:480px;height:auto;margin:auto';
       [0.25,0.5,0.75,1].forEach(function(f){crearSVG('polygon',{points:vertices(f),fill:'none',stroke:'#d8dfe3','stroke-width':1.4},grafico);});
@@ -1870,9 +1884,9 @@ iniciarDesdeUrl_();
       crearSVG('polygon',{points:vertices(function(c){return Math.max(0,Math.min(1,c.valor/max));}),fill:'#415969','fill-opacity':'.16',stroke:'#415969','stroke-width':3},grafico);
       var botones=document.createElement('div');botones.style.cssText='display:flex;flex-wrap:wrap;gap:9px;margin-top:12px';
       var detalle=document.createElement('div');detalle.style.cssText='background:#f5f7f9;border-radius:14px;padding:18px;margin-top:18px';
-      var nombre=document.createElement('div');nombre.style.cssText='font-size:38px;line-height:1.35;font-weight:850;color:#263947';detalle.appendChild(nombre);
-      var calificacion=document.createElement('div');calificacion.style.cssText='font-size:38px;font-weight:800;color:#415969;margin-top:8px';detalle.appendChild(calificacion);
-      var nota=document.createElement('p');nota.textContent='Los comportamientos y la autoevaluación aún no están vinculados por competencia en los resultados disponibles.';nota.style.cssText='font-size:38px;line-height:1.4;color:#52616b;margin:12px 0 0';detalle.appendChild(nota);
+      var nombre=document.createElement('div');nombre.style.cssText='font-size:18px;line-height:1.35;font-weight:850;color:#263947';detalle.appendChild(nombre);
+      var calificacion=document.createElement('div');calificacion.style.cssText='font-size:22px;font-weight:800;color:#415969;margin-top:8px';detalle.appendChild(calificacion);
+      var nota=document.createElement('p');nota.textContent='Los comportamientos y la autoevaluación aún no están vinculados por competencia en los resultados disponibles.';nota.style.cssText='font-size:14px;line-height:1.4;color:#52616b;margin:12px 0 0';detalle.appendChild(nota);
       var puntos=[];
       function seleccionar(i){
         var c=competencias[i];nombre.textContent=c.nombre;calificacion.textContent='Calificación publicada: '+c.texto;
@@ -1883,7 +1897,7 @@ iniciarDesdeUrl_();
         var p=xy(i,Math.max(0,Math.min(1,c.valor/max)));
         var circulo=crearSVG('circle',{cx:p[0],cy:p[1],r:6,fill:'#415969',stroke:'#fff','stroke-width':2,tabindex:0,role:'button','aria-label':c.nombre+', '+c.texto},grafico);
         circulo.style.cursor='pointer';circulo.addEventListener('click',function(){seleccionar(i);});circulo.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();seleccionar(i);}});puntos.push(circulo);
-        var b=document.createElement('button');b.type='button';b.textContent=c.nombre;b.style.cssText='padding:12px 14px;border:1px solid #d6dde2;border-radius:11px;background:#fff;color:#263947;font-size:38px;line-height:1.35;font-weight:800;cursor:pointer';b.addEventListener('click',function(){seleccionar(i);});botones.appendChild(b);
+        var b=document.createElement('button');b.type='button';b.textContent=c.nombre;b.style.cssText='padding:12px 14px;border:1px solid #d6dde2;border-radius:11px;background:#fff;color:#263947;font-size:15px;line-height:1.35;font-weight:800;cursor:pointer';b.addEventListener('click',function(){seleccionar(i);});botones.appendChild(b);
       });
       seccion.appendChild(botones);seccion.appendChild(detalle);
       tarjetaCompetencias.parentNode.insertBefore(seccion,tarjetaCompetencias);

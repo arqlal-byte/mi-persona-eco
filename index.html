@@ -1913,5 +1913,17 @@ iniciarDesdeUrl_();
 })();
 </script>
 <script src="./eco-portadas.js"></script>
+<style id="eco-tipografia-unificada">
+:root{--eco-font-min:16px;--eco-font-destacado:20px;--eco-texto:16px;--eco-titulo-seccion:22px;--eco-titulo-tarjeta:20px;--eco-texto-secundario:14px}
+body{font-size:var(--eco-texto)}
+#home .sectionTitle,#home .developmentTitle,#home .familySectionTitle,#ecoPerfilResultados .ecoPerfilIntro h3,#ecoPerfilResultados .ecoPerfilCardHead h3,#ecoPerfilResultados #peRadialIndependiente h3{font-size:var(--eco-titulo-seccion)!important;line-height:1.25}
+#home .activityTitle,#home .activity.activityFeed .activityFeedTitle,#home .familyActivityTitle,#home .activityGroupTitle,#home .activityCompletedTitle{font-size:var(--eco-titulo-tarjeta);line-height:1.3}
+#home .activity.activityFeed .activityFeedDescription,#home .activityDescription,#home .progressMessage,#home .developmentProgress .progressText,#peMensajesLista .peMensajeCuerpo,#ecoPerfilResultados .ecoPerfilIntro p,#ecoPerfilResultados .ecoPerfilMetricLine,#ecoPerfilResultados .ecoPerfilMetricLine strong,#ecoPerfilResultados .ecoPerfilFocus p,#ecoPerfilResultados .ecoPerfilFocusRow,#ecoPerfilResultados .ecoPerfilEmpty{font-size:var(--eco-texto);line-height:1.5}
+#home .activity.activityFeed .activityFeedDate,#home .familyActivityDate,#home .activity.activityFeed .activityTypeLabel,#home .activityMeta,#home .activity.activityFeed .activityFeedNotice,#home .activityCompletedType,#home .activityCompletedMeta,#ecoPerfilResultados .ecoPerfilStat small,#ecoPerfilResultados .ecoPerfilNote,#ecoPerfilResultados .ecoPerfilFoot{font-size:var(--eco-texto-secundario);line-height:1.45}
+#home .activity.activityFeed .activityFeedAction,#home .familyActivityAction,#home .activityCompletedLink,#home .resourceLink,#home .activityValidationBox,#home .logout{font-size:var(--eco-texto);line-height:1.35}
+#ecoPerfilResultados #peRadialIndependiente p{font-size:var(--eco-texto)!important}
+#ecoPerfilResultados #peRadialIndependiente button{font-size:15px!important}
+#home .activityTitle,#home .activityFeedTitle,#home .familyActivityTitle{overflow-wrap:anywhere}
+</style>
 </body>
 </html>

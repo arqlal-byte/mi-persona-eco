@@ -15,17 +15,29 @@
   var sequence = 0;
   var channel=Array.from(crypto.getRandomValues(new Uint8Array(32)),b=>b.toString(16).padStart(2,'0')).join('');
   var endpoint=null,endpointOrigin=null;
-  var allowedMethods = new Set([
-    'estadoAccesoPersonaECO', 'iniciarSesionPersonaECO', 'estadoSesionPersonaECO',
-    'cerrarSesionPersonaECO', 'obtenerPersonaECO', 'consultarPerfilECO',
-    'obtenerActividadesFamiliaresPersonaECO', 'obtenerPortadasECO', 'obtenerMensajesPendientesPersonaECO',
-    'obtenerHistorialMensajesPersonaECO', 'obtenerValidacionPersonaECO',
-    'registrarActividadPorTokenPersonaECO', 'guardarActividadPersonaECO',
-    'guardarRespuestaActividadPersonaECO', 'guardarEvidenciaActividadPersonaECO',
-    'guardarEvidenciaDocumentalPersonaECO', 'marcarMensajeLeidoPersonaECO',
-    'crearContrasenaPersonaECO', 'seleccionarPersonaAdminPersonaECO',
-    'cambiarPersonaAdminPersonaECO'
-  ]);
+  var routes = Object.freeze({
+    "estadoAccesoPersonaECO": "centroPersonaEstadoAccesoECO",
+    "iniciarSesionPersonaECO": "centroPersonaIniciarSesionECO",
+    "estadoSesionPersonaECO": "centroPersonaEstadoSesionECO",
+    "cerrarSesionPersonaECO": "centroPersonaCerrarSesionECO",
+    "obtenerPersonaECO": "centroPersonaConsultarECO",
+    "consultarPerfilECO": "centroPersonaConsultarPerfilECO",
+    "obtenerActividadesFamiliaresPersonaECO": "centroPersonaConsultarFamiliaECO",
+    "obtenerPortadasECO": "centroPersonaConsultarPortadasECO",
+    "obtenerMensajesPendientesPersonaECO": "centroPersonaMensajesPendientesECO",
+    "obtenerHistorialMensajesPersonaECO": "centroPersonaMensajesECO",
+    "obtenerValidacionPersonaECO": "centroPersonaObtenerValidacionECO",
+    "registrarActividadPorTokenPersonaECO": "centroPersonaValidarTokenECO",
+    "guardarActividadPersonaECO": "centroPersonaGuardarActividadECO",
+    "guardarRespuestaActividadPersonaECO": "centroPersonaGuardarRespuestaECO",
+    "guardarEvidenciaActividadPersonaECO": "centroPersonaGuardarEvidenciaECO",
+    "guardarEvidenciaDocumentalPersonaECO": "centroPersonaGuardarDocumentoECO",
+    "marcarMensajeLeidoPersonaECO": "centroPersonaMarcarMensajeECO",
+    "crearContrasenaPersonaECO": "centroPersonaCrearContrasenaECO",
+    "seleccionarPersonaAdminPersonaECO": "centroPersonaSeleccionarAdminECO",
+    "cambiarPersonaAdminPersonaECO": "centroPersonaCambiarAdminECO"
+});
+  var allowedMethods = new Set(Object.keys(routes));
   function active() { return CONFIG.mode === 'live' && typeof CONFIG.bridgeUrl === 'string' && !!CONFIG.bridgeUrl; }
   function isBridgeHost(origin) {
     try {
@@ -87,7 +99,7 @@
       Promise.race([readyPromise, new Promise(function(_,r){setTimeout(function(){r(new Error('No se pudo conectar con el servicio de Google Sheets.'));}, 16000);})])
         .then(function(){
           if (!pending.has(id)) return;
-          endpoint.postMessage({ecoBridge:'ECO_V3',channel:channel,type:'call',id:id,method:method,args:Array.isArray(args)?args:[]},endpointOrigin);
+          endpoint.postMessage({ecoBridge:'ECO_V3',channel:channel,type:'call',id:id,method:routes[method],args:Array.isArray(args)?args:[]},endpointOrigin);
         }).catch(function(e){var job=pending.get(id);if(job){pending.delete(id);clearTimeout(job.timer);job.reject(e);}});
     });
     return promise;

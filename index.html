@@ -574,8 +574,51 @@ body{line-height:1.4;overflow-wrap:break-word}
 #ecoInstalarBoton{font:inherit;font-weight:750;background:#984a32;color:white;border:0;border-radius:10px;min-height:46px;padding:12px 16px;margin-top:14px;cursor:pointer}#ecoInstalarBoton[hidden]{display:none}.ecoInstalarNota,#ecoInstalarEstado{font-size:14px;margin:12px 0 0;color:#65717a}
 @media(max-width:650px){.ecoInstalarGrid{grid-template-columns:1fr}}
 @media(display-mode:standalone){#ecoInstalar{display:none!important}}
-</style></head>
+</style><style id="eco-install-first-style">
+#ecoInstallPrincipal{display:none;max-width:520px;margin:0 auto;text-align:center;color:#203026;font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;padding:28px 18px}
+html.eco-install-first body>:not(#ecoInstallPrincipal):not(script):not(style):not(iframe){display:none!important}
+html.eco-install-first #ecoInstallPrincipal{display:block}
+#ecoInstallPrincipal *{box-sizing:border-box}
+#ecoInstallPrincipal .logo{width:112px;height:112px;border-radius:25px;display:block;margin:0 auto 14px;box-shadow:0 7px 22px rgba(0,0,0,.13)}
+#ecoInstallPrincipal h1{margin:0;font-size:29px;line-height:1.1;color:#203026}
+#ecoInstallPrincipal .lead{margin:7px 0 22px;color:#68736c;font-size:16px}
+#ecoInstallPrincipal .guide{background:#fff;border:1px solid #dde5df;border-radius:20px;padding:18px;text-align:left;margin:13px 0}
+#ecoInstallPrincipal .guide-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+#ecoInstallPrincipal .badge{width:52px;height:52px;min-width:52px;border-radius:50%;background:#e8f3ea;display:grid;place-items:center;font-size:29px;font-weight:700;color:#2e7d32}
+#ecoInstallPrincipal .guide h2{font-size:19px;margin:0 0 2px}
+#ecoInstallPrincipal .guide small{color:#768079;font-size:13px}
+#ecoInstallPrincipal .step{display:flex;align-items:center;gap:11px;margin:11px 0;font-size:15px;line-height:1.3}
+#ecoInstallPrincipal .n{width:27px;height:27px;min-width:27px;border-radius:50%;background:#2e7d32;color:#fff;display:grid;place-items:center;font-size:14px;font-weight:800}
+#ecoInstallPrincipal .share{font-size:25px;line-height:1;font-weight:600}
+#ecoInstallPrincipal .menu{font-size:27px;line-height:1;font-weight:800;letter-spacing:1px}
+#ecoInstallPrincipal .once{margin:18px 0 4px;color:#657069;font-size:14px}
+#ecoContinuarNavegador{font:inherit;font-size:15px;color:#4f6255;background:none;border:0;text-decoration:underline;padding:13px;cursor:pointer;margin-top:8px}
+@media(min-width:700px){#ecoInstallPrincipal{padding-top:42px}}
+</style>
+<script>
+(function(){var installed=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;if(!installed)document.documentElement.classList.add('eco-install-first');})();
+</script>
+</head>
 <body>
+<main id="ecoInstallPrincipal">
+  <img class="logo" src="./icons/icon-192.png" alt="Persona ECO">
+  <h1>Instala Mi Persona ECO</h1>
+  <p class="lead">Ten acceso directo desde tu celular. Solo necesitas hacerlo una vez.</p>
+  <section class="guide">
+    <div class="guide-head"><div class="badge">□↑</div><div><h2>iPhone / iPad</h2><small>Desde Safari</small></div></div>
+    <div class="step"><span class="n">1</span><span>Pulsa el botón <strong>Compartir</strong> <span class="share">□↑</span></span></div>
+    <div class="step"><span class="n">2</span><span>Selecciona <strong>“Añadir a pantalla de inicio”</strong>.</span></div>
+    <div class="step"><span class="n">3</span><span>Pulsa <strong>“Añadir”</strong>.</span></div>
+  </section>
+  <section class="guide">
+    <div class="guide-head"><div class="badge menu">⋮</div><div><h2>Android</h2><small>Desde Chrome</small></div></div>
+    <div class="step"><span class="n">1</span><span>Pulsa el menú <strong class="menu">⋮</strong> del navegador.</span></div>
+    <div class="step"><span class="n">2</span><span>Selecciona <strong>“Instalar aplicación”</strong> o <strong>“Añadir a pantalla de inicio”</strong>.</span></div>
+    <div class="step"><span class="n">3</span><span>Confirma <strong>“Instalar”</strong>.</span></div>
+  </section>
+  <p class="once">Después abre Persona ECO desde el nuevo icono de tu pantalla.</p>
+<button type="button" id="ecoContinuarNavegador">Continuar en el navegador</button>
+</main>
 
 <div id="peWelcome" class="peWelcomeHidden" role="status" aria-live="polite">
   <div class="peWelcomeContent">
@@ -606,14 +649,7 @@ body{line-height:1.4;overflow-wrap:break-word}
       <div style="margin-top:8px;color:#56656d">No ingreses datos personales reales. Sin conexión a las bases operativas. Usuario: <strong>DEMO-001</strong> · Contraseña: <strong>eco-demo</strong>.</div>
     </div>
     <p class="intro">Consulta las actividades que tienes asignadas y registra tu avance.</p>
-    <details id="ecoInstalar" class="ecoInstalar">
-<summary>Instalar en mi celular</summary>
-<div class="ecoInstalarIntro"><img src="./icons/icon-192.png" width="56" height="56" alt="Icono Persona ECO"><p>Agrega Mi Persona ECO a tu pantalla de inicio para abrirla desde su icono.</p></div>
-<div class="ecoInstalarGrid"><section><h3>iPhone / iPad</h3><ol><li>Abre este enlace en <strong>Safari</strong>.</li><li>Toca <strong>Compartir □↑</strong> y elige <strong>Agregar a pantalla de inicio</strong>.</li><li>Si aparece, activa <strong>Abrir como app web</strong> y toca <strong>Agregar</strong>.</li></ol></section>
-<section><h3>Android</h3><ol><li>Abre este enlace en <strong>Chrome</strong>.</li><li>Toca el menú <strong aria-label="tres puntos">⋮</strong> y elige <strong>Instalar aplicación</strong> o <strong>Agregar a pantalla principal</strong>.</li><li>Confirma <strong>Instalar</strong> o <strong>Agregar</strong>.</li></ol></section></div>
-<button type="button" id="ecoInstalarBoton" hidden>Instalar Mi Persona ECO</button><p id="ecoInstalarEstado" role="status" aria-live="polite"></p><p class="ecoInstalarNota">Necesita internet. Instalarla no cambia tu usuario ni tu contraseña.</p>
-</details>
-<form id="loginForm" autocomplete="on">
+    <form id="loginForm" autocomplete="on">
       <label class="cap" for="usuario">USUARIO</label>
       <input id="usuario" name="username" class="nomina" inputmode="numeric" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Usuario">
       <div id="passwordBlock" style="margin-top:14px">
@@ -1946,6 +1982,6 @@ body{font-size:var(--eco-texto)}
 #ecoPerfilResultados #peRadialIndependiente button{font-size:15px!important}
 #home .activityTitle,#home .activityFeedTitle,#home .familyActivityTitle{overflow-wrap:anywhere}
 </style>
-<script src="./eco-instalar.js?v=instalar-01"></script>
+<script src="./eco-instalar.js?v=instalar-referencia-02"></script>
 </body>
 </html>

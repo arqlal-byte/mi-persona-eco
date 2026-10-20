@@ -1709,29 +1709,8 @@ $('documentEvidenceCancel').onclick=cerrarEvidenciaDocumental_;
 $('validationConfirm').onclick=confirmarValidacion_;
 $('validationNomina').addEventListener('keydown',e=>{if(e.key==='Enter'&&!$('validationConfirm').disabled)confirmarValidacion_()});
 
-$('loginForm').addEventListener('submit',e=>{e.preventDefault();buscar();});
+$('loginForm').addEventListener('submit',e=>{e.preventDefault();if(!$('buscar').disabled)buscar();});
 $('firstAccessToggle').addEventListener('click',alternarPrimerAcceso_);
-$('usuario').addEventListener('keydown',e=>{if(e.key==='Enter')buscar()});
-$('password').addEventListener('keydown',e=>{if(e.key==='Enter')buscar()});
-// iOS / Face ID: cuando Safari termina de autocompletar la contraseña,
- // cerrar el teclado y continuar automáticamente con el ingreso.
-let pePasswordAutofillTimer_=null;
-$('password').addEventListener('input',e=>{
-  if(loginMode!=='login') return;
-  clearTimeout(pePasswordAutofillTimer_);
-  pePasswordAutofillTimer_=setTimeout(()=>{
-    const campo=$('password');
-    const usuario=$('usuario');
-    if(!campo || !campo.value || !usuario || !usuario.value.trim()) return;
-    cerrarTecladoIOS_();
-    // Evita doble envío si Safari además dispara submit/Enter.
-    const btn=$('buscar');
-    if(btn && btn.disabled) return;
-    buscar();
-  },220);
-});
-$('confirmPassword').addEventListener('keydown',e=>{if(e.key==='Enter')buscar()});
-$('bindNomina').addEventListener('keydown',e=>{if(e.key==='Enter')buscar()});
 $('adminAbrir').onclick=abrirPersonaAdmin_;
 $('adminNomina').addEventListener('keydown',e=>{if(e.key==='Enter')abrirPersonaAdmin_()});
 $('adminCambiarPersona').onclick=cambiarPersonaAdmin_;

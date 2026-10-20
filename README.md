@@ -8,6 +8,7 @@
 
 - `index.html`: interfaz oficial adaptada a celular y computadora; conserva pestañas, gráfica, portadas 16:9 y botones compactos.
 - `eco-config.js`: `mode:'demo'` conserva la simulación pública. En `mode:'live'`, tras configurar `bridgeUrl` con el `/exec` del conector privado, se cambia al acceso seguro sin exponer datos en GitHub.
+- `eco-portadas.js`: recuperación autenticada de portadas desde Drive cuando el acceso directo al thumbnail esté bloqueado por el navegador; no permite leer imágenes arbitrarias.
 - `eco-bridge-client.js`: transporte aislado entre el navegador y el conector privado; valida métodos, la URL del servicio y el origen de respuesta. Las credenciales se envían por HTTPS dentro de mensajes entre marcos del navegador, nunca en la URL.
 
 **No colocar contraseñas, tokens, datos personales, llaves de integración ni copias de Sheets en este repositorio público.** El backend privado NO se incluye aquí. La validación real de actividades queda deshabilitada hasta verificar y autorizar operaciones de escritura.

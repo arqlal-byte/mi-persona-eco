@@ -526,6 +526,26 @@ body{line-height:1.4;overflow-wrap:break-word}
  #ecoPerfilResultados .ecoPerfilCard{padding:13px}
 }
 </style>
+
+<style id="eco-cards-visual-20261019">
+/* Alcance: SOLO prototipo Mi Persona ECO en GitHub. No se modifica Persona ECO de Google. */
+#home .activity.activityFeed{overflow:hidden}
+#home .activityCoverWrap{aspect-ratio:16/9;width:100%;display:block;overflow:hidden;background:#e6e9eb}
+#home .activityCover{display:block;width:100%;height:100%;object-fit:cover}
+#home .activity.activityFeed .activityFeedBody{padding:22px 22px 24px}
+#home .activity.activityFeed .activityFeedTitle{font-size:clamp(25px,3.4vw,31px);line-height:1.18;font-weight:950;letter-spacing:-.018em;margin:0 0 9px;color:#172126}
+#home .activity.activityFeed .activityTypeLabel{font-size:14px;line-height:1.4;font-weight:750;color:#66727a;letter-spacing:0}
+#home .activity.activityFeed .activityFeedDescription{font-size:16px;line-height:1.5;margin-top:12px}
+#home .activity.activityFeed .activityValidationBox{box-sizing:border-box;display:inline-flex;width:max-content;max-width:100%;min-height:43px;align-items:center;justify-content:flex-start;gap:9px;margin:18px 0 2px;padding:9px 14px;background:#f7f1ee;color:#984A32;border:2px solid #984A32;border-radius:11px;font-size:15px!important;line-height:1.2;font-weight:850;cursor:pointer;white-space:normal}
+#home .activity.activityFeed .activityValidationBox .activityFeedCheck{box-sizing:border-box;width:20px;height:20px;min-width:20px;min-height:20px;flex:0 0 20px;margin:0;accent-color:#984A32}
+#home .activity.activityFeed .activityValidationBox:focus-within{outline:3px solid #415969;outline-offset:3px}
+#home .activity.activityFeed .activityFeedNotice{margin-top:14px}
+@media(max-width:600px){
+ #home .activity.activityFeed .activityFeedBody{padding:19px 17px 20px}
+ #home .activity.activityFeed .activityFeedTitle{font-size:26px;line-height:1.23}
+ #home .activity.activityFeed .activityValidationBox{font-size:15px!important;min-height:42px;padding:9px 12px}
+}
+</style>
 </head>
 <body>
 
@@ -718,11 +738,27 @@ body{line-height:1.4;overflow-wrap:break-word}
 'use strict';
 const nombre='PERSONA DE PRUEBA ECO';
 const personaDemo={nomina:'DEMO-001',nombre,puesto:'Líder de prueba',area:'Área demostrativa'};
+
+ // Portadas ilustrativas exclusivas de actividades FICTICIAS del prototipo.
+ // Al conectar el catálogo oficial se usará a.imagenPortada sin esta simulación.
+ function portadaDemoECO_(clave,subtitulo,color1,color2){
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img">
+  <defs><linearGradient id="f" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${color1}"/><stop offset="1" stop-color="${color2}"/></linearGradient><pattern id="p" width="56" height="56" patternUnits="userSpaceOnUse"><path d="M56 0H0V56" fill="none" stroke="#fff" stroke-opacity=".12" stroke-width="1"/></pattern></defs>
+  <rect width="1200" height="675" fill="url(#f)"/><rect width="1200" height="675" fill="url(#p)"/>
+  <circle cx="1060" cy="100" r="285" fill="#fff" opacity=".055"/><circle cx="1030" cy="535" r="190" fill="#fff" opacity=".07"/><circle cx="930" cy="350" r="58" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="14"/>
+  <rect x="75" y="63" width="336" height="43" rx="21" fill="#fff" opacity=".18"/>
+  <text x="96" y="93" fill="#fff" font-family="Arial,sans-serif" font-size="23" font-weight="bold" letter-spacing="3">PORTADA DEMOSTRATIVA</text>
+  <text x="78" y="366" fill="#fff" font-family="Arial,sans-serif" font-size="182" font-weight="bold">${clave}</text>
+  <text x="86" y="456" fill="#fff" font-family="Arial,sans-serif" font-size="44" font-weight="bold">${subtitulo}</text>
+  <rect x="82" y="508" width="300" height="9" rx="4" fill="#fff" opacity=".7"/>
+  <text x="86" y="580" fill="#fff" font-family="Arial,sans-serif" font-size="23" letter-spacing="2" opacity=".86">MI PERSONA ECO · SIMULACIÓN</text></svg>`;
+  return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
+ }
 const actividades=[
- {id:'DEMO-D02',titulo:'Reflexión sobre el elemento 2',tipo:'Actividad práctica',competencia:'Generador de Impacto',descripcion:'Actividad ficticia vinculada al elemento 2 y al ciclo 2026.',completada:false,tipoValidacion:'Manual',fechaLimite:'',url:'',duracion:'10 min'},
- {id:'DEMO-D05',titulo:'Ejercicio de mejora del elemento 5',tipo:'Actividad práctica',competencia:'Constructor de Equipo',descripcion:'Ejemplo de actividad habilitada por elemento.',completada:true,tipoValidacion:'Manual',fechaLimite:'',url:'',duracion:'15 min'},
- {id:'DEMO-D11',titulo:'Plan de acción del elemento 11',tipo:'Actividad práctica',competencia:'Agente de Mejora Continua',descripcion:'Ejercicio ficticio sin relación con colaboradores reales.',completada:false,tipoValidacion:'Manual',fechaLimite:'',url:'',duracion:'20 min'},
- {id:'DEMO-ESP-1',titulo:'Actividad especial asignada por RH (ejemplo)',tipo:'Actividad especial',competencia:'',descripcion:'Ejemplo de asignación personal de RH.',completada:false,tipoValidacion:'Administrativa',fechaLimite:'',url:'',duracion:''}
+ {id:'DEMO-D02',imagenPortada:portadaDemoECO_('E02','REFLEXIÓN Y APRENDIZAJE','#314f66','#668796'),titulo:'Reflexión sobre el elemento 2',tipo:'Actividad práctica',competencia:'Generador de Impacto',descripcion:'Actividad ficticia vinculada al elemento 2 y al ciclo 2026.',completada:false,tipoValidacion:'Manual',fechaLimite:'',url:'',duracion:'10 min'},
+ {id:'DEMO-D05',imagenPortada:portadaDemoECO_('E05','TRABAJO EN EQUIPO','#496d59','#8cb297'),titulo:'Ejercicio de mejora del elemento 5',tipo:'Actividad práctica',competencia:'Constructor de Equipo',descripcion:'Ejemplo de actividad habilitada por elemento.',completada:true,tipoValidacion:'Manual',fechaLimite:'',url:'',duracion:'15 min'},
+ {id:'DEMO-D11',imagenPortada:portadaDemoECO_('E11','MEJORA CONTINUA','#8b4c38','#c9926d'),titulo:'Plan de acción del elemento 11',tipo:'Actividad práctica',competencia:'Agente de Mejora Continua',descripcion:'Ejercicio ficticio sin relación con colaboradores reales.',completada:false,tipoValidacion:'Manual',fechaLimite:'',url:'',duracion:'20 min'},
+ {id:'DEMO-ESP-1',imagenPortada:portadaDemoECO_('ESP','ACTIVIDAD ESPECIAL','#665372','#a59bb3'),titulo:'Actividad especial asignada por RH (ejemplo)',tipo:'Actividad especial',competencia:'',descripcion:'Ejemplo de asignación personal de RH.',completada:false,tipoValidacion:'Administrativa',fechaLimite:'',url:'',duracion:''}
 ];
 let token='';let leido=false;
 const copia=x=>JSON.parse(JSON.stringify(x));
@@ -733,7 +769,7 @@ const metodos={
  estadoSesionPersonaECO(t){return token&&t===token?{ok:true,esAdmin:false,persona:copia(personaDemo),data:datos()}:{ok:false};},
  obtenerPersonaECO(t){autorizado(t);return datos();},
  consultarPerfilECO(t){autorizado(t);let cs=['Generador de Impacto','Constructor de Equipo','Agente de Mejora Continua','Líder de Desarrollo','Aliado Estratégico'];let cv=[3.7,4.2,3.5,4.4,3.9];let ev=[4.3,3.4,4.5,4.0,3.6,4.1,4.2,4.5,3.8,4.0,3.2,4.1,4.5,3.9,4.2,4.3,4.5,4.4,3.7,4.2];return {persona:copia(personaDemo),competencias:cs.map((nombre,i)=>({nombre,valor:cv[i]})),comportamientos:ev.map((valor,i)=>({nombre:'Elemento '+(i+1),valor}))};},
- obtenerActividadesFamiliaresPersonaECO(t){autorizado(t);return {ok:true,actividades:[{id:'DEMO-F1',titulo:'Invitación abierta para las familias (ejemplo)',fechaTerminacion:'',url:'',imagenPortadaId:''}]};},
+ obtenerActividadesFamiliaresPersonaECO(t){autorizado(t);return {ok:true,actividades:[{id:'DEMO-F1',titulo:'Invitación abierta para las familias (ejemplo)',fechaTerminacion:'',url:'',imagenPortadaId:'',imagenPortada:portadaDemoECO_('FAM','ACTIVIDAD FAMILIAR','#516c75','#88a9ac')}]};},
  obtenerHistorialMensajesPersonaECO(t){autorizado(t);return {ok:true,mensajes:[{id:'DEMO-M1',fecha:'19/10/2026',tipo:'Todos',mensaje:'Mensaje de ejemplo de Recursos Humanos para mostrar el módulo de comunicaciones.',actividad:'',leido}]};},
  marcarMensajeLeidoPersonaECO(t,id){autorizado(t);if(id==='DEMO-M1')leido=true;return {ok:true,soloDemo:true};},
  guardarActividadPersonaECO(t,payload){autorizado(t);let a=actividades.find(a=>a.id===payload.idActividad);if(!a)throw new Error('Actividad ficticia no encontrada.');if(a.tipoValidacion==='Administrativa')throw new Error('La validación corresponde a RH.');a.completada=!!payload.completada;return datos();},
@@ -1207,7 +1243,7 @@ function cargarActividadesFamiliaresPersonaECO_(){
       container.innerHTML=actividades.map(a=>{
         const imagen=a.imagenPortadaId
           ? `https://drive.google.com/thumbnail?id=${encodeURIComponent(a.imagenPortadaId)}&sz=w1200`
-          : '';
+          : (a.imagenPortada||'');
         return `<article class="familyActivityCard">
           ${imagen?`<img class="familyActivityCover" src="${esc(imagen)}" alt="Portada de ${esc(a.titulo||'Actividad familiar')}">`:''}
           <div class="familyActivityBody">
@@ -1305,14 +1341,12 @@ function renderHome(){
     return `<div class="activity activityFeed" data-id="${esc(a.id)}">
       ${a.imagenPortada?`<div class="activityCoverWrap"><img class="activityCover" src="${esc(a.imagenPortada)}" alt="Portada de ${esc(a.titulo)}"></div>`:''}
       <div class="activityFeedBody">
-        <div class="activityFeedTop">
-          <div class="activityTypeLabel">${esc(tipoDuracion)}</div>
-          ${sinCasilla?'':`<label class="activityValidationBox"><input class="activityFeedCheck" type="checkbox" aria-label="Validar actividad" onchange="toggleActivity(this,'${esc(a.id)}')"><span>Validar actividad</span></label>`}
-        </div>
         <div class="activityFeedTitle">${esc(a.titulo)}</div>
+        <div class="activityTypeLabel">${esc(tipoDuracion)}</div>
         ${a.descripcion?`<div class="activityFeedDescription">${esc(a.descripcion)}</div>`:''}
         ${a.fechaLimite?`<div class="activityFeedDate">Fecha límite · ${esc(a.fechaLimite)}</div>`:''}
         ${a.url?`<a class="activityFeedAction" href="${esc(a.url)}" target="_blank" rel="noopener">Abrir recurso</a>`:''}
+        ${sinCasilla?'':`<label class="activityValidationBox"><input class="activityFeedCheck" type="checkbox" aria-label="Validar actividad" onchange="toggleActivity(this,'${esc(a.id)}')"><span>Validar actividad</span></label>`}
         ${avisoValidacion?`<div class="activityFeedNotice">${esc(avisoValidacion)}</div>`:''}
         ${!a.url&&!avisoValidacion?`<div class="activityFeedNotice">Marca la actividad cuando la hayas realizado.</div>`:''}
       </div>

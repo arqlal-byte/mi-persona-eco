@@ -16,7 +16,7 @@
   var allowedMethods = new Set([
     'estadoAccesoPersonaECO', 'iniciarSesionPersonaECO', 'estadoSesionPersonaECO',
     'cerrarSesionPersonaECO', 'obtenerPersonaECO', 'consultarPerfilECO',
-    'obtenerActividadesFamiliaresPersonaECO', 'obtenerMensajesPendientesPersonaECO',
+    'obtenerActividadesFamiliaresPersonaECO', 'obtenerPortadasECO', 'obtenerMensajesPendientesPersonaECO',
     'obtenerHistorialMensajesPersonaECO', 'obtenerValidacionPersonaECO',
     'registrarActividadPorTokenPersonaECO', 'guardarActividadPersonaECO',
     'guardarRespuestaActividadPersonaECO', 'guardarEvidenciaActividadPersonaECO',

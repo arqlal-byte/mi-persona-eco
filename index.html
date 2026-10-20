@@ -731,11 +731,20 @@ body{line-height:1.4;overflow-wrap:break-word}
   </div>
 </div>
 
+<script src="./eco-config.js"></script>
+<script src="./eco-bridge-client.js"></script>
 <script>
 /* Simulador local de Google Apps Script. SOLO DATOS FICTICIOS.
    Se incorpora ÚNICAMENTE en PREVIA_...html, nunca en index.html. */
 (function(){
 'use strict';
+if (window.EcoBridgeClient && window.EcoBridgeClient.active()) {
+  window.EcoBridgeClient.installLegacyGoogleRun();
+  var notice = document.getElementById('peDemoNotice');
+  if (notice) notice.innerHTML = '<strong>MI PERSONA ECO · CONEXIÓN OFICIAL</strong><div style="margin-top:8px">Inicia sesión con el acceso autorizado. Información protegida, consultada desde Google Sheets.</div>';
+  return;
+}
+
 const nombre='PERSONA DE PRUEBA ECO';
 const personaDemo={nomina:'DEMO-001',nombre,puesto:'Líder de prueba',area:'Área demostrativa'};
 
@@ -804,6 +813,11 @@ const $=id=>document.getElementById(id);
 let persona=null,data=null,sessionToken='',sessionIsAdmin=false;
 let loginMode='usuario';
 const SESSION_STORAGE_KEY='personaEcoSession';
+// No persistir sesiones oficiales en el almacenamiento compartido del dominio GitHub Pages.
+const PE_AUTH_STORE = (window.EcoBridgeClient && window.EcoBridgeClient.active())
+  ? (()=>{const d=new Map();return {getItem:k=>d.get(k)||null,setItem:(k,v)=>d.set(k,String(v)),removeItem:k=>d.delete(k)}})()
+  : window.localStorage;
+
 
 /* Botón Asistente Cultura ECO: requiere la URL pública del despliegue (/exec).
    No transmite nómina, calificaciones, sesión ni ningún otro dato personal.
@@ -1018,18 +1032,18 @@ function resetLogin_(){
   $('loginError').textContent='';
 }
 function restaurarSesion_(){
-  const token=localStorage.getItem(SESSION_STORAGE_KEY)||'';
+  const token=PE_AUTH_STORE.getItem(SESSION_STORAGE_KEY)||'';
   if(!token){show('login');resetLogin_();$('usuario').focus();return;}
   sessionToken=token;
   google.script.run.withSuccessHandler(r=>{
-    if(!r||!r.ok){localStorage.removeItem(SESSION_STORAGE_KEY);sessionToken='';show('login');resetLogin_();return;}
+    if(!r||!r.ok){PE_AUTH_STORE.removeItem(SESSION_STORAGE_KEY);sessionToken='';show('login');resetLogin_();return;}
     sessionIsAdmin=!!r.esAdmin;
     if(r.requiereSeleccion){mostrarSelectorAdmin_();return;}
     mostrarBienvenidaPersonaECO_();
     if(!r.persona||!r.data){cargarPersonaDespuesDeSesion_();return;}
     persona=r.persona;data=r.data;mostrarMensajesAntesDeHome_();
   }).withFailureHandler(()=>{
-    localStorage.removeItem(SESSION_STORAGE_KEY);sessionToken='';show('login');resetLogin_();
+    PE_AUTH_STORE.removeItem(SESSION_STORAGE_KEY);sessionToken='';show('login');resetLogin_();
   }).estadoSesionPersonaECO(token);
 }
 function alternarPrimerAcceso_(){
@@ -1151,7 +1165,7 @@ function cargarPersonaDespuesDeSesion_(){
 
 function completarLogin_(r){
   if(!r||!r.ok){errorLogin_({message:'No fue posible iniciar sesión.'});return;}
-  sessionToken=r.token; sessionIsAdmin=!!r.esAdmin; localStorage.setItem(SESSION_STORAGE_KEY,sessionToken);
+  sessionToken=r.token; sessionIsAdmin=!!r.esAdmin; PE_AUTH_STORE.setItem(SESSION_STORAGE_KEY,sessionToken);
   if(!r.requiereSeleccion) mostrarBienvenidaPersonaECO_();
   if(r.requiereSeleccion){mostrarSelectorAdmin_();return;}
   if(!r.persona||!r.data){cargarPersonaDespuesDeSesion_();return;}
@@ -1721,7 +1735,7 @@ $('bindNomina').addEventListener('keydown',e=>{if(e.key==='Enter')buscar()});
 $('adminAbrir').onclick=abrirPersonaAdmin_;
 $('adminNomina').addEventListener('keydown',e=>{if(e.key==='Enter')abrirPersonaAdmin_()});
 $('adminCambiarPersona').onclick=cambiarPersonaAdmin_;
-const cerrarSesionUI_=()=>{peLimpiarCacheVistas_();const t=sessionToken;sessionToken='';sessionIsAdmin=false;localStorage.removeItem(SESSION_STORAGE_KEY);persona=null;data=null;$('usuario').value='';show('login');resetLogin_();$('usuario').focus();if(t)google.script.run.cerrarSesionPersonaECO(t)};
+const cerrarSesionUI_=()=>{peLimpiarCacheVistas_();const t=sessionToken;sessionToken='';sessionIsAdmin=false;PE_AUTH_STORE.removeItem(SESSION_STORAGE_KEY);persona=null;data=null;$('usuario').value='';show('login');resetLogin_();$('usuario').focus();if(t)google.script.run.cerrarSesionPersonaECO(t)};
 $('salir').onclick=cerrarSesionUI_;
 $('adminSalir').onclick=cerrarSesionUI_;
 // El historial se consulta desde la pestaña Mensajes.

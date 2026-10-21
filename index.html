@@ -1765,9 +1765,39 @@ function toggleActivity(ch,id){
     if(!claveValidacion){ch.checked=false;return;}
   }
   const card=ch.closest('.activity');card.classList.add('saving');
-  google.script.run.withSuccessHandler(r=>{data=r;renderHome()})
-    .withFailureHandler(e=>{ch.checked=!ch.checked;card.classList.remove('saving');alert((e&&e.message)||e)})
-    .guardarActividadPersonaECO(sessionToken,{idActividad:id,completada:ch.checked,claveValidacion});
+  const cambioSolicitado=ch.checked;
+  ch.disabled=true;
+  const mostrarErrorGuardado=e=>{
+    ch.checked=!cambioSolicitado;
+    ch.disabled=false;
+    card.classList.remove('saving');
+    alert((e&&e.message)||String(e));
+  };
+  const mostrarErrorActualizacion=()=>{
+    ch.disabled=false;
+    card.classList.remove('saving');
+    alert('No fue posible actualizar las actividades en pantalla. Vuelve a cargar Mi Persona ECO para consultar el estado guardado.');
+  };
+  google.script.run
+    .withSuccessHandler(r=>{
+      if(!r||r.ok===false){
+        mostrarErrorGuardado({message:(r&&r.mensaje)||'No se confirmó el registro de la actividad.'});
+        return;
+      }
+      // Live: {ok, mensaje, data}. Demo: objeto de datos directamente.
+      const actualizado=r.data&&r.data.persona&&Array.isArray(r.data.actividades)?r.data:
+        r.persona&&Array.isArray(r.actividades)?r:null;
+      if(actualizado){data=actualizado;renderHome();return;}
+      // Nunca reemplazar una lista válida por una respuesta sin actividades.
+      google.script.run.withSuccessHandler(fresh=>{
+        if(!fresh||fresh.ok===false||!fresh.persona||!Array.isArray(fresh.actividades)){
+          mostrarErrorActualizacion();return;
+        }
+        data=fresh;renderHome();
+      }).withFailureHandler(mostrarErrorActualizacion).obtenerPersonaECO(sessionToken);
+    })
+    .withFailureHandler(mostrarErrorGuardado)
+    .guardarActividadPersonaECO(sessionToken,{idActividad:id,completada:cambioSolicitado,claveValidacion});
 }
 $('questionValidationSend').onclick=enviarRespuestaActividad_;
 $('questionValidationCancel').onclick=cerrarPreguntaActividad_;

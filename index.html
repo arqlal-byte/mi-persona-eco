@@ -827,7 +827,7 @@ html.eco-install-first #ecoInstallPrincipal{display:block}
 </div>
 
 <script src="./eco-config.js"></script>
-<script src="./eco-bridge-client.js"></script>
+<script src="./eco-bridge-client.js?v=cierre-sesion-20261021"></script>
 <script>
 /* Simulador local de Google Apps Script. SOLO DATOS FICTICIOS.
    Se incorpora ÚNICAMENTE en PREVIA_...html, nunca en index.html. */
@@ -1882,7 +1882,55 @@ $('firstAccessToggle').addEventListener('click',alternarPrimerAcceso_);
 $('adminAbrir').onclick=abrirPersonaAdmin_;
 $('adminNomina').addEventListener('keydown',e=>{if(e.key==='Enter')abrirPersonaAdmin_()});
 $('adminCambiarPersona').onclick=cambiarPersonaAdmin_;
-const cerrarSesionUI_=()=>{peLimpiarCacheVistas_();const t=sessionToken;sessionToken='';sessionIsAdmin=false;PE_AUTH_STORE.removeItem(SESSION_STORAGE_KEY);persona=null;data=null;$('usuario').value='';show('login');resetLogin_();$('usuario').focus();if(t)google.script.run.cerrarSesionPersonaECO(t)};
+function peCerrarSesionLocal_(){
+  // La respuesta de una solicitud anterior no debe volver a mostrar datos personales.
+  const tokenAnterior=sessionToken;
+  if(tokenAnterior&&window.EcoBridgeClient&&typeof window.EcoBridgeClient.invalidatePersonaSession==='function'){
+    window.EcoBridgeClient.invalidatePersonaSession(tokenAnterior);
+  }
+  peSyncSolicitud_++;
+  peLimpiarCacheVistas_();
+  sessionToken='';sessionIsAdmin=false;
+  PE_AUTH_STORE.removeItem(SESSION_STORAGE_KEY);
+  window.sessionStorage.removeItem(SESSION_STORAGE_KEY);
+  window.localStorage.removeItem(SESSION_STORAGE_KEY);
+  persona=null;data=null;
+  $('usuario').value='';
+  $('helloName').textContent='';
+  $('activities').replaceChildren();
+  $('familyActivities').replaceChildren();
+  $('familyActivitiesSection').classList.add('hidden');
+  $('ecoPerfilResultados').replaceChildren();
+  $('peMensajesLista').replaceChildren();
+  const badge=$('peMensajesBadge');
+  if(badge){badge.textContent='';badge.classList.add('hidden');}
+  const syncBtn=$('peSyncActividades');
+  if(syncBtn){syncBtn.disabled=false;syncBtn.classList.remove('is-syncing');syncBtn.removeAttribute('aria-busy');}
+  $('peSyncEstado').textContent='';$('peSyncEstado').classList.remove('error');
+  ['questionValidationOverlay','photoEvidenceOverlay','documentEvidenceOverlay','ecoMessageOverlay'].forEach(id=>{
+    const el=$(id);if(el)el.classList.remove('open');
+  });
+  const mensajeAbierto=$('peMensajeDialogCompleto');
+  if(mensajeAbierto&&mensajeAbierto.open)mensajeAbierto.close();
+  $('questionValidationAnswer').value='';
+  $('photoEvidenceInput').value='';$('photoEvidenceComment').value='';
+  $('documentEvidenceInput').value='';$('documentEvidenceComment').value='';
+  photoEvidenceFiles=[];documentEvidenceFile=null;
+  resetLogin_();
+  peCambiarPestana_('actividades');
+  show('login');
+  window.scrollTo(0,0);
+}
+const cerrarSesionUI_=()=>{
+  const token=sessionToken;
+  peCerrarSesionLocal_();
+  if(token)google.script.run.cerrarSesionPersonaECO(token);
+};
+window.addEventListener('eco-persona-sesion-expirada',event=>{
+  // No cerrar una nueva sesión por un error perteneciente a la anterior.
+  if(!sessionToken||String(event.detail?.token||'')!==sessionToken)return;
+  peCerrarSesionLocal_();
+});
 $('salir').onclick=cerrarSesionUI_;
 $('adminSalir').onclick=cerrarSesionUI_;
 // El historial se consulta desde la pestaña Mensajes.

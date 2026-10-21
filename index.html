@@ -194,9 +194,18 @@ input[type="checkbox"]{width:48px;height:48px;min-width:48px;}
 .activityGroupCompleted{margin-top:34px;}
 .activityAllDone{padding:18px;border-radius:16px;background:#eef8f0;color:#1f6b35;font-size:var(--eco-font-min);font-weight:800;margin-bottom:22px;}
 /* Sincronización manual: sólo vuelve a consultar la fuente; conserva la pantalla si falla. */
-#home .peSyncActividades{display:block;width:100%;min-height:72px;margin:0 0 10px;padding:14px 16px;box-sizing:border-box;border:2px solid #415969;border-radius:16px;background:#fff;color:#263947;font-size:clamp(24px,4.5vw,32px);font-weight:900;line-height:1.3;cursor:pointer;}
+#home .peGreetingRow{display:flex;align-items:center;gap:6px;min-width:0;margin:6px 0 24px;}
+#home .peGreetingRow .helloName{flex:0 1 auto;min-width:0;margin:0;overflow-wrap:anywhere;}
+#home .peSyncActividades{display:inline-flex;align-items:center;justify-content:center;flex:0 0 44px;width:44px;height:44px;padding:10px;box-sizing:border-box;border:0;border-radius:50%;background:transparent;color:#73808a;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+#home .peSyncActividades svg{display:block;width:24px;height:24px;}
+#home .peSyncActividades:hover{background:rgba(65,89,105,.08);color:#415969;}
+#home .peSyncActividades:focus-visible{outline:2px solid #415969;outline-offset:2px;}
 #home .peSyncActividades:disabled{opacity:.65;cursor:wait;}
-#home .peSyncEstado{min-height:1.3em;margin:0 0 18px;color:#415969;font-size:clamp(20px,3.8vw,27px);line-height:1.4;font-weight:750;overflow-wrap:anywhere;}
+#home .peSyncActividades.is-syncing svg{animation:peSyncGiro .9s linear infinite;}
+@keyframes peSyncGiro{to{transform:rotate(360deg);}}
+@media (prefers-reduced-motion:reduce){#home .peSyncActividades.is-syncing svg{animation:none;}}
+#home .peSyncEstado{margin:-10px 0 14px;color:#65727c;font-size:clamp(16px,2.7vw,20px);line-height:1.3;font-weight:650;overflow-wrap:anywhere;}
+#home .peSyncEstado:empty{display:none;}
 #home .peSyncEstado.error{color:#aa2436;}
 .activity.activityFeed{display:block;padding:0;overflow:hidden;border-radius:22px;background:#fff;border:1px solid #e0e3e5;box-shadow:0 8px 24px rgba(0,0,0,.08);margin:0 0 24px;border-color:#e0e3e5;}
 .activityCoverWrap{width:100%;aspect-ratio:16/9;background:#e8eaec;overflow:hidden;}
@@ -698,7 +707,17 @@ html.eco-install-first #ecoInstallPrincipal{display:block}
   <main id="confirm" class="screen hidden"></main>
 
   <main id="home" class="screen hidden">
-    <div class="hello">Hola,</div><div id="helloName" class="helloName"></div>
+    <div class="hello">Hola,</div>
+    <div class="peGreetingRow">
+      <div id="helloName" class="helloName"></div>
+      <button id="peSyncActividades" class="peSyncActividades" type="button" onclick="peSincronizarActividades_()" aria-label="Sincronizar actividades" title="Sincronizar actividades">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="M20 11a8.1 8.1 0 0 0-15.5-2M4 4v5h5"></path>
+          <path d="M4 13a8.1 8.1 0 0 0 15.5 2M20 20v-5h-5"></path>
+        </svg>
+      </button>
+    </div>
+    <p id="peSyncEstado" class="peSyncEstado" role="status" aria-live="polite"></p>
     <nav class="peTabs" aria-label="Secciones de Persona ECO">
       <button type="button" class="peTab peTabActive" data-pe-tab="actividades" aria-selected="true" onclick="peCambiarPestana_('actividades')">Actividades</button>
       <button type="button" class="peTab" data-pe-tab="familia" aria-selected="false" onclick="peCambiarPestana_('familia')">Familia</button>
@@ -724,8 +743,6 @@ html.eco-install-first #ecoInstallPrincipal{display:block}
     <!-- ACCESO ASISTENTE CULTURA ECO (independiente; sin transmitir datos del colaborador). -->
     <button id="peAsistenteCultura" type="button" class="primary" style="display:block;box-sizing:border-box;width:100%;height:auto;min-height:70px;padding:18px 16px;text-align:center;line-height:1.3;margin:0 0 26px;background:#415969;cursor:pointer;" onclick="peAbrirAsistenteCulturaECO_()">Asistente Cultura ECO</button>
     <div class="sectionTitle">Mis actividades</div>
-    <button id="peSyncActividades" class="peSyncActividades" type="button" onclick="peSincronizarActividades_()">↻ Sincronizar actividades</button>
-    <p id="peSyncEstado" class="peSyncEstado" role="status" aria-live="polite"></p>
     <div id="activities"></div>
     </div>
     <div id="peTabFamilia" class="peTabPanel hidden">
@@ -1227,10 +1244,14 @@ function peSincronizarActividades_(){
   const solicitud=++peSyncSolicitud_;
   estado.classList.remove('error');
   estado.textContent='Sincronizando actividades…';
-  btn.disabled=true;btn.textContent='Sincronizando…';
+  btn.disabled=true;
+  btn.classList.add('is-syncing');
+  btn.setAttribute('aria-busy','true');
   function terminar(mensaje,error){
     if(solicitud!==peSyncSolicitud_||token!==sessionToken)return;
-    btn.disabled=false;btn.textContent='↻ Sincronizar actividades';
+    btn.disabled=false;
+    btn.classList.remove('is-syncing');
+    btn.removeAttribute('aria-busy');
     estado.textContent=mensaje;estado.classList.toggle('error',!!error);
   }
   google.script.run

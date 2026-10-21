@@ -103,13 +103,47 @@
     });
     return promise;
   }
+  // Operaciones que requieren token de sesión personal (no incluye acceso RH).
+  var metodosSesionPersona = new Set([
+    'estadoSesionPersonaECO','obtenerPersonaECO','consultarPerfilECO',
+    'obtenerActividadesFamiliaresPersonaECO','obtenerPortadasECO',
+    'obtenerMensajesPendientesPersonaECO','obtenerHistorialMensajesPersonaECO',
+    'guardarActividadPersonaECO','guardarRespuestaActividadPersonaECO',
+    'guardarEvidenciaActividadPersonaECO','guardarEvidenciaDocumentalPersonaECO',
+    'marcarMensajeLeidoPersonaECO','seleccionarPersonaAdminPersonaECO',
+    'cambiarPersonaAdminPersonaECO'
+  ]);
+  var invalidPersonaTokens = new Set();
+  function invalidatePersonaSession(token){
+    if(token)invalidPersonaTokens.add(String(token));
+  }
+  function sesionPersonalVencida(err){
+    var m=String((err&&err.message)||err||'').normalize('NFD')
+      .replace(/[\u0300-\u036f]/g,'').toLowerCase();
+    return /\bsesion\s+(?:expiro|expirada|vencio|vencida|caducada|no valida|invalida|fue revocada)\b|\binicia sesion nuevamente\b/.test(m);
+  }
   function runShim(success,failure) {
     return new Proxy({}, {get:function(target,key){
       if (key === 'withSuccessHandler') return function(fn){return runShim(fn,failure);};
       if (key === 'withFailureHandler') return function(fn){return runShim(success,fn);};
       if (key === 'then') return undefined;
-      return function(){var args=Array.prototype.slice.call(arguments);
-        return invoke(String(key),args).then(function(v){if(typeof success==='function')success(v);},function(err){if(typeof failure==='function')failure(err);else console.error('Conector ECO:',err.message);});
+      return function(){var args=Array.prototype.slice.call(arguments),metodo=String(key);
+        var token=metodosSesionPersona.has(metodo)?String(args[0]||''):'';
+        return invoke(metodo,args).then(function(v){
+          if(token && invalidPersonaTokens.has(token))return;
+          if(typeof success==='function')success(v);
+        },function(err){
+          if(token && invalidPersonaTokens.has(token))return;
+          if(token && sesionPersonalVencida(err)){
+            invalidatePersonaSession(token);
+            root.dispatchEvent(new CustomEvent('eco-persona-sesion-expirada',{
+              detail:{token:token}
+            }));
+            return; // Evita mensajes de error una vez que se regresó al acceso.
+          }
+          if(typeof failure==='function')failure(err);
+          else console.error('Conector ECO:',err.message);
+        });
       };
     }});
   }
@@ -126,5 +160,5 @@
     }};
     return true;
   }
-  root.EcoBridgeClient = {active:active,install:install,invoke:invoke,installLegacyGoogleRun:installLegacyGoogleRun};
+  root.EcoBridgeClient = {active:active,install:install,invoke:invoke,installLegacyGoogleRun:installLegacyGoogleRun,invalidatePersonaSession:invalidatePersonaSession};
 })(window);

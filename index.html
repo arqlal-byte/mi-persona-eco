@@ -1265,6 +1265,7 @@ function peSincronizarActividades_(){
       // Sólo reemplazar tras validar una respuesta completa y de la misma nómina.
       persona=r.persona;data=r;
       renderHome();
+      if(!$('peTabFamilia').classList.contains('hidden'))cargarActividadesFamiliaresPersonaECO_();
       terminar('Actividades actualizadas correctamente.',false);
     })
     .withFailureHandler(e=>{
@@ -1372,19 +1373,22 @@ function peCambiarPestana_(nombre){
     b.classList.toggle('peTabActive',activo);
     b.setAttribute('aria-selected',String(activo));
   });
+  if(nombre==='familia')cargarActividadesFamiliaresPersonaECO_();
   if(nombre==='mensajes')peCargarMensajes_();
   if(nombre==='perfil' && typeof window.peCargarPerfilECO_==='function')window.peCargarPerfilECO_();
 }
+let peFamiliaSolicitud_=0;
 function cargarActividadesFamiliaresPersonaECO_(){
   const section=$('familyActivitiesSection');
   const container=$('familyActivities');
-  if(!section||!container||!sessionToken)return;
-
-  section.classList.add('hidden');
-  container.innerHTML='';
+  if(!section||!container||!sessionToken||!persona)return;
+  const tokenConsulta=sessionToken,nominaConsulta=String(persona.nomina||''),solicitud=++peFamiliaSolicitud_;
+  section.classList.remove('hidden');
+  container.innerHTML='<div class="empty">Consultando actividades familiares…</div>';
 
   google.script.run
     .withSuccessHandler(r=>{
+      if(solicitud!==peFamiliaSolicitud_||tokenConsulta!==sessionToken||nominaConsulta!==String(persona?.nomina||''))return;
       const actividades=(r&&r.ok&&Array.isArray(r.actividades))?r.actividades:[];
       if(!actividades.length){
         section.classList.remove('hidden');
@@ -1397,7 +1401,7 @@ function cargarActividadesFamiliaresPersonaECO_(){
           ? `https://drive.google.com/thumbnail?id=${encodeURIComponent(a.imagenPortadaId)}&sz=w1200`
           : (a.imagenPortada||'');
         return `<article class="familyActivityCard" data-id="${esc(a.id)}">
-          ${imagen?`<img class="familyActivityCover" src="${esc(imagen)}" alt="Portada de ${esc(a.titulo||'Actividad familiar')}">`:''}
+          ${imagen?`<img class="familyActivityCover" loading="lazy" decoding="async" src="${esc(imagen)}" alt="Portada de ${esc(a.titulo||'Actividad familiar')}">`:''}
           <div class="familyActivityBody">
             <div class="familyActivityTitle">${esc(a.titulo||'')}</div>
             ${a.fechaTerminacion?`<div class="familyActivityDate">Disponible hasta ${esc(a.fechaTerminacion)}</div>`:''}
@@ -1409,6 +1413,7 @@ function cargarActividadesFamiliaresPersonaECO_(){
       section.classList.remove('hidden');
     })
     .withFailureHandler(e=>{
+      if(solicitud!==peFamiliaSolicitud_||tokenConsulta!==sessionToken||nominaConsulta!==String(persona?.nomina||''))return;
       console.error('Actividades familiares:',e);
       section.classList.remove('hidden');
       container.innerHTML='<div class="empty">No fue posible consultar las actividades familiares. Intenta ingresar nuevamente.</div>';
@@ -1491,7 +1496,7 @@ function renderHome(){
     const avisoValidacion=validacionRH?'Pendiente de validación por Recursos Humanos.':validacionJefe?'Pendiente de confirmación de tu jefe directo a Recursos Humanos.':validacionQR?'Esta actividad se registra escaneando el código QR y capturando tu número de nómina.':validacionAutomatica?'Esta actividad se validará automáticamente al completarla en la aplicación correspondiente.':'';
     const tipoDuracion=[a.tipo||'Actividad',a.duracion||''].filter(Boolean).join(' · ');
     return `<div class="activity activityFeed" data-id="${esc(a.id)}">
-      ${a.imagenPortada?`<div class="activityCoverWrap"><img class="activityCover" src="${esc(a.imagenPortada)}" alt="Portada de ${esc(a.titulo)}"></div>`:''}
+      ${a.imagenPortada?`<div class="activityCoverWrap"><img class="activityCover" loading="lazy" decoding="async" src="${esc(a.imagenPortada)}" alt="Portada de ${esc(a.titulo)}"></div>`:''}
       <div class="activityFeedBody">
         <div class="activityFeedTitle">${esc(a.titulo)}</div>
         <div class="activityTypeLabel">${esc(tipoDuracion)}</div>
@@ -1520,7 +1525,6 @@ function renderHome(){
 
   if(!total){
     $('activities').innerHTML='<div class="empty">Por ahora no tienes actividades pendientes ni asignadas.</div>';
-    cargarActividadesFamiliaresPersonaECO_();
     return;
   }
   let html='';
@@ -1542,7 +1546,6 @@ function renderHome(){
     html+=`<div class="activityGroupTitle activityGroupCompleted">Actividades cumplidas</div>${cumplidas.map(tarjetaCumplida).join('')}`;
   }
   $('activities').innerHTML=html;
-  cargarActividadesFamiliaresPersonaECO_();
 }
 
 function toggleActivityDetails_(event,btn){
@@ -1889,6 +1892,7 @@ function peCerrarSesionLocal_(){
     window.EcoBridgeClient.invalidatePersonaSession(tokenAnterior);
   }
   peSyncSolicitud_++;
+  peFamiliaSolicitud_++;
   peLimpiarCacheVistas_();
   sessionToken='';sessionIsAdmin=false;
   PE_AUTH_STORE.removeItem(SESSION_STORAGE_KEY);

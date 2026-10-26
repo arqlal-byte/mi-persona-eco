@@ -612,6 +612,13 @@ html.eco-install-first #ecoInstallPrincipal{display:block}
 <script>
 (function(){var installed=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;if(!installed)document.documentElement.classList.add('eco-install-first');})();
 </script>
+<style>
+/* Pantalla de acceso simplificada: el formulario aparece sin banners en conexión oficial. */
+#login .peFirstAccessLink{display:block;width:auto;min-height:44px;margin:14px auto 0;padding:8px 12px;border:0;background:transparent;color:#245f83;text-decoration:underline;text-underline-offset:3px;font:inherit;font-weight:700;cursor:pointer}
+#login .peFirstAccessLink:hover{color:#173f59}
+#login .peFirstAccessLink:focus-visible{outline:3px solid #245f83;outline-offset:3px;border-radius:6px}
+#login #loginError:empty{display:none}
+</style>
 </head>
 <body>
 <main id="ecoInstallPrincipal">
@@ -658,11 +665,10 @@ html.eco-install-first #ecoInstallPrincipal{display:block}
   </main>
 
   <main id="login" class="screen">
-    <div id="peDemoNotice" class="personCard" style="margin-bottom:20px;border-left:6px solid #415969;font-size:28px;line-height:1.45">
+    <div id="peDemoNotice" class="personCard hidden" style="margin-bottom:20px;border-left:6px solid #415969;font-size:28px;line-height:1.45">
       <strong>MI PERSONA ECO · PRUEBAS PÚBLICAS CON DATOS FICTICIOS</strong>
       <div style="margin-top:8px;color:#56656d">No ingreses datos personales reales. Sin conexión a las bases operativas. Usuario: <strong>DEMO-001</strong> · Contraseña: <strong>eco-demo</strong>.</div>
     </div>
-    <p class="intro">Consulta las actividades que tienes asignadas y registra tu avance.</p>
     <form id="loginForm" autocomplete="on">
       <label class="cap" for="usuario">NÚMERO DE NÓMINA</label>
       <input id="usuario" name="username" class="nomina" inputmode="numeric" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Escribe tu número de nómina">
@@ -686,8 +692,7 @@ html.eco-install-first #ecoInstallPrincipal{display:block}
       </div>
       <button id="buscar" class="primary" type="submit">Entrar</button>
     </form>
-    <button id="firstAccessToggle" class="secondary" type="button">Crear mi contraseña</button>
-    <div class="accessRhHelp" style="margin-top:18px;text-align:center;color:#6b7479;font-size:28px;line-height:1.45">¿No puedes acceder? Comunícate con Recursos Humanos para restablecer tu acceso.</div>
+    <button id="firstAccessToggle" class="peFirstAccessLink" type="button">Crear mi contraseña</button>
     <div id="loginError" class="error"></div>
   </main>
 
@@ -836,9 +841,12 @@ html.eco-install-first #ecoInstallPrincipal{display:block}
 if (window.EcoBridgeClient && window.EcoBridgeClient.active()) {
   window.EcoBridgeClient.installLegacyGoogleRun();
   var notice = document.getElementById('peDemoNotice');
-  if (notice) notice.innerHTML = '<strong>MI PERSONA ECO · CONEXIÓN OFICIAL</strong><div style="margin-top:8px">Inicia sesión con el acceso autorizado. Información protegida, consultada desde Google Sheets.</div>';
+  if (notice) notice.remove();
   return;
 }
+
+const demoNotice = document.getElementById('peDemoNotice');
+if (demoNotice) demoNotice.classList.remove('hidden');
 
 const nombre='PERSONA DE PRUEBA ECO';
 const personaDemo={nomina:'DEMO-001',nombre,puesto:'Líder de prueba',area:'Área demostrativa'};

@@ -1160,7 +1160,7 @@ function alternarPrimerAcceso_(){
     $('passwordBlock').classList.add('hidden');
     $('firstAccessBlock').classList.remove('hidden');
     $('bindNominaBlock').classList.toggle('hidden',!r.requiereNomina);
-    $('buscar').textContent='Crear contraseña y entrar';
+    $('buscar').textContent='Crear contraseña y solicitar acceso';
     $('firstAccessToggle').textContent='Volver a iniciar sesión';
     $('newPassword').focus();
   }).withFailureHandler(e=>{
@@ -1205,7 +1205,7 @@ function buscar(){
   const password=$('newPassword').value,confirmacion=$('confirmPassword').value,nomina=$('bindNomina').value.trim();
   if(password.length<8){$('loginError').textContent='La contraseña debe tener al menos 8 caracteres.';return;}
   if(password!==confirmacion){$('loginError').textContent='Las contraseñas no coinciden.';return;}
-  $('buscar').disabled=true;$('buscar').textContent='Creando acceso…';
+  $('buscar').disabled=true;$('buscar').textContent='Registrando solicitud…';
   cerrarTecladoIOS_();
   google.script.run.withSuccessHandler(procesarRespuestaCredenciales_).withFailureHandler(errorLogin_)
     .crearContrasenaPersonaECO({usuario,password,confirmacion,nomina});
@@ -1303,6 +1303,13 @@ function cargarPersonaDespuesDeSesion_(){
 }
 
 function completarLogin_(r){
+  if(r&&r.ok&&r.pendiente===true){
+    sessionToken='';sessionIsAdmin=false;persona=null;data=null;
+    PE_AUTH_STORE.removeItem(SESSION_STORAGE_KEY);
+    resetLogin_();show('login');
+    $('loginError').textContent=r.mensaje||'Tu contraseña fue creada. En espera de que Recursos Humanos verifique tu identidad y autorice tu acceso.';
+    return;
+  }
   if(!r||!r.ok){errorLogin_({message:'No fue posible iniciar sesión.'});return;}
   sessionToken=r.token; sessionIsAdmin=!!r.esAdmin; PE_AUTH_STORE.setItem(SESSION_STORAGE_KEY,sessionToken);
   if(!r.requiereSeleccion) mostrarBienvenidaPersonaECO_();

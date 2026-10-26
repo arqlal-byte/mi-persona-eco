@@ -664,8 +664,8 @@ html.eco-install-first #ecoInstallPrincipal{display:block}
     </div>
     <p class="intro">Consulta las actividades que tienes asignadas y registra tu avance.</p>
     <form id="loginForm" autocomplete="on">
-      <label class="cap" for="usuario">USUARIO</label>
-      <input id="usuario" name="username" class="nomina" inputmode="numeric" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Usuario">
+      <label class="cap" for="usuario">NÚMERO DE NÓMINA</label>
+      <input id="usuario" name="username" class="nomina" inputmode="numeric" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Escribe tu número de nómina">
       <div id="passwordBlock" style="margin-top:14px">
         <label class="cap" for="password">CONTRASEÑA</label>
         <input id="password" name="password" class="nomina" type="password" autocomplete="current-password" placeholder="Escribe tu contraseña">
@@ -673,7 +673,7 @@ html.eco-install-first #ecoInstallPrincipal{display:block}
       <div id="firstAccessBlock" class="hidden" style="margin-top:14px">
         <div class="personCard" style="margin-bottom:14px">
           <div class="question">PRIMER ACCESO</div>
-          <div class="meta">Crea la contraseña que utilizarás para entrar a Persona ECO.</div>
+          <div class="meta">Crea tu contraseña. Recursos Humanos verificará tu identidad antes de permitirte entrar.</div>
         </div>
         <div id="bindNominaBlock" class="hidden">
           <label class="cap" for="bindNomina">NÚMERO DE NÓMINA</label>
@@ -686,7 +686,7 @@ html.eco-install-first #ecoInstallPrincipal{display:block}
       </div>
       <button id="buscar" class="primary" type="submit">Entrar</button>
     </form>
-    <button id="firstAccessToggle" class="secondary" type="button">¿Es tu primer acceso? Crear contraseña</button>
+    <button id="firstAccessToggle" class="secondary" type="button">Crear mi contraseña</button>
     <div class="accessRhHelp" style="margin-top:18px;text-align:center;color:#6b7479;font-size:28px;line-height:1.45">¿No puedes acceder? Comunícate con Recursos Humanos para restablecer tu acceso.</div>
     <div id="loginError" class="error"></div>
   </main>
@@ -1123,7 +1123,7 @@ function resetLogin_(){
   $('bindNominaBlock').classList.add('hidden');
   $('password').value=''; $('newPassword').value=''; $('confirmPassword').value=''; $('bindNomina').value='';
   $('buscar').textContent='Entrar'; $('buscar').disabled=false; $('usuario').disabled=false;
-  $('firstAccessToggle').textContent='¿Es tu primer acceso? Crear contraseña';
+  $('firstAccessToggle').textContent='Crear mi contraseña';
   $('loginError').textContent='';
 }
 function restaurarSesion_(){
@@ -1165,7 +1165,7 @@ function alternarPrimerAcceso_(){
     $('newPassword').focus();
   }).withFailureHandler(e=>{
     $('firstAccessToggle').disabled=false;
-    $('firstAccessToggle').textContent='¿Es tu primer acceso? Crear contraseña';
+    $('firstAccessToggle').textContent='Crear mi contraseña';
     $('loginError').textContent=(e&&e.message)||String(e);
   }).estadoAccesoPersonaECO(usuario);
 }

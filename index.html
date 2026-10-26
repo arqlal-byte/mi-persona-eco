@@ -1973,7 +1973,6 @@ iniciarDesdeUrl_();
     destino.replaceChildren();
     var persona=r.persona||{};
     var comps=Array.isArray(r.competencias)?r.competencias:[];
-    var beh=Array.isArray(r.comportamientos)?r.comportamientos:[];
     var hero=el('section','ecoPerfilHero',null,destino);
     var avatar=el('div','ecoPerfilAvatar',null,hero);
     el('span','',String(persona.nombre||'P').trim().slice(0,1).toUpperCase(),avatar);
@@ -1987,7 +1986,7 @@ iniciarDesdeUrl_();
     var intro=el('div','ecoPerfilIntro',null,destino);
     el('h3','','Resultados de evaluación',intro);
     el('p','','Consulta visual de los resultados publicados para tu nómina.',intro);
-    var all=comps.concat(beh).map(function(x){return Number(x.valor);}).filter(Number.isFinite);
+    var all=comps.map(function(x){return Number(x.valor);}).filter(Number.isFinite);
     var techo=Math.max(1,all.length?Math.max.apply(null,all):1);
     function barra(padre,x){
       var item=el('div','ecoPerfilMetric',null,padre);
@@ -2017,26 +2016,25 @@ iniciarDesdeUrl_();
       comps.forEach(function(x){barra(metricas,x);});
       el('p','ecoPerfilNote','Las barras son comparativas respecto al valor más alto mostrado; no representan un porcentaje de cumplimiento.',card);
     }
-    var details=el('section','ecoPerfilCard',null,destino);
-    var dh=el('div','ecoPerfilCardHead',null,details);
-    el('h3','','Comportamientos evaluados',dh);
-    el('span','ecoPerfilCount',beh.length+' registrados',dh);
-    if(!beh.length)el('p','ecoPerfilEmpty','No hay comportamientos publicados para esta nómina.',details);
-    else{
-      var sorted=beh.slice().sort(function(a,b){return Number(a.valor)-Number(b.valor);});
-      var preview=el('div','ecoPerfilFocus',null,details);
-      el('div','ecoPerfilEyebrow','OPORTUNIDADES DE DESARROLLO',preview);
-      el('p','','Estos son los comportamientos con los resultados más bajos. Son referencias de análisis, no prioridades formalmente asignadas.',preview);
-      sorted.slice(0,Math.min(3,sorted.length)).forEach(function(x,i){
-        var line=el('div','ecoPerfilFocusRow',null,preview);
-        el('span','ecoPerfilFocusNumber',String(i+1).padStart(2,'0'),line);
-        el('span','',x.nombre,line);
-        el('strong','',numero(x.valor),line);
+
+    /* Interpretación generada previamente por Dashboard ECO.
+       No se solicita ni genera inteligencia artificial desde esta app. */
+    var ia=r.informeIA||{};
+    var sec=el('section','ecoPerfilCard ecoInformeIA',null,destino);
+    var iaHead=el('div','ecoPerfilCardHead',null,sec);
+    el('h3','','Mi informe individual de IA',iaHead);
+    if(ia.disponible && typeof ia.texto==='string' && ia.texto.trim()){
+      var iaBody=el('div','ecoInformeIATexto',null,sec);
+      ia.texto.trim().split(/\\n\\s*\\n/).forEach(function(bloque){
+        var t=bloque.trim();if(!t)return;
+        if(/^[A-ZÁÉÍÓÚÜÑ0-9 ·—:,;()\\-]+$/.test(t) && t.length<130){
+          el('h4','ecoInformeIAEncabezado',t,iaBody);
+        }else{
+          el('p','ecoInformeIAParrafo',t,iaBody);
+        }
       });
-      var toggle=el('details','ecoPerfilDetails',null,details);
-      var summary=el('summary','','Ver todos los comportamientos ('+beh.length+')',toggle);
-      var lista=el('div','ecoPerfilMetrics',null,toggle);
-      beh.forEach(function(x){barra(lista,x);});
+    }else{
+      el('p','ecoPerfilEmpty',ia.mensaje||'Tu informe individual de IA todavía no está disponible.',sec);
     }
     var foot=el('div','ecoPerfilFoot','Fuente: resultados publicados en Dashboard Ejecutivo ECO. Esta vista es de consulta; no modifica tus evaluaciones.',destino);
   }
@@ -2130,6 +2128,10 @@ body{font-size:var(--eco-texto)}
 #ecoPerfilResultados #peRadialIndependiente p{font-size:var(--eco-texto)!important}
 #ecoPerfilResultados #peRadialIndependiente button{font-size:15px!important}
 #home .activityTitle,#home .activityFeedTitle,#home .familyActivityTitle{overflow-wrap:anywhere}
+#ecoPerfilResultados .ecoInformeIA{margin-top:18px}
+#ecoPerfilResultados .ecoInformeIAEncabezado{font-size:18px;line-height:1.35;color:#263947;margin:22px 0 10px;font-weight:800}
+#ecoPerfilResultados .ecoInformeIAParrafo{font-size:16px;line-height:1.65;color:#34434e;white-space:pre-line;margin:0 0 15px;overflow-wrap:anywhere}
+#ecoPerfilResultados .ecoInformeIATexto{max-width:900px}
 </style>
 <script src="./eco-instalar.js?v=instalar-referencia-02"></script>
 </body>

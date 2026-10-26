@@ -2025,9 +2025,9 @@ iniciarDesdeUrl_();
     el('h3','','Mi informe individual de IA',iaHead);
     if(ia.disponible && typeof ia.texto==='string' && ia.texto.trim()){
       var iaBody=el('div','ecoInformeIATexto',null,sec);
-      ia.texto.trim().split(/\\n\\s*\\n/).forEach(function(bloque){
+      ia.texto.trim().split(/\n\s*\n/).forEach(function(bloque){
         var t=bloque.trim();if(!t)return;
-        if(/^[A-ZÁÉÍÓÚÜÑ0-9 ·—:,;()\\-]+$/.test(t) && t.length<130){
+        if(/^[A-ZÁÉÍÓÚÜÑ0-9 ·—:,;()-]+$/.test(t) && t.length<130){
           el('h4','ecoInformeIAEncabezado',t,iaBody);
         }else{
           el('p','ecoInformeIAParrafo',t,iaBody);

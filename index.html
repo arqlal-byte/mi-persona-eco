@@ -2159,6 +2159,7 @@ iniciarDesdeUrl_();
       var estado=auto&&auto.estado;
       var motivo=estado==='error'||auto===undefined||auto===null?
         'No fue posible consultar la autoevaluación en este momento.':
+        auto.disponible===true?'No fue posible vincular la autoevaluación con las cinco competencias.':
         'Autoevaluación pendiente.';
       agregar('p','',motivo,seccion).style.cssText='font-size:14px;font-weight:650;color:#596974;margin:9px 0 8px';
     }

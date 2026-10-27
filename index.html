@@ -2073,6 +2073,8 @@ iniciarDesdeUrl_();
       el('p','ecoPerfilNote','Las barras son comparativas respecto al valor más alto mostrado; no representan un porcentaje de cumplimiento.',card);
     }
 
+    if(window.peDibujarRadarPerfilComparativo_)window.peDibujarRadarPerfilComparativo_(destino,r);
+
     /* Interpretación generada previamente por Dashboard ECO.
        No se solicita ni genera inteligencia artificial desde esta app. */
     var ia=r.informeIA||{};
@@ -2099,77 +2101,133 @@ iniciarDesdeUrl_();
 })();
 </script>
 <script>
-/* Perfil radial ECO: lectura de resultados ya publicados en pantalla.
-   Independiente del inicio de sesión y de las funciones originales. */
+/* MI PERSONA ECO · COMPARATIVO DE PERCEPCIÓN 2026.
+   La fuente se recibe exclusivamente del Servicio de Datos, nómina autenticada.
+   Los resultados y la autoevaluación se presentan en la misma escala 1–5. */
 (function(){
   'use strict';
-  var raiz=document.getElementById('ecoPerfilResultados');
-  if(!raiz)return;
-  var trabajando=false;
-  function crearSVG(tipo,atributos,padre){
+  function agregar(tipo,clase,texto,padre){
+    var n=document.createElement(tipo);
+    if(clase)n.className=clase;
+    if(texto!==null&&texto!==undefined)n.textContent=texto;
+    if(padre)padre.appendChild(n);
+    return n;
+  }
+  function svg(tipo,atributos,padre){
     var n=document.createElementNS('http://www.w3.org/2000/svg',tipo);
     Object.keys(atributos||{}).forEach(function(k){n.setAttribute(k,String(atributos[k]));});
     if(padre)padre.appendChild(n);
     return n;
   }
-  function insertarRadial(){
-    if(trabajando||raiz.querySelector('#peRadialIndependiente'))return;
-    var tarjetas=raiz.querySelectorAll('.ecoPerfilCard');
-    if(!tarjetas.length)return;
-    var tarjetaCompetencias=tarjetas[0];
-    var filas=Array.prototype.slice.call(tarjetaCompetencias.querySelectorAll('.ecoPerfilMetric'));
-    var competencias=filas.map(function(f){
-      var nombre=f.querySelector('.ecoPerfilMetricLine span');
-      var nota=f.querySelector('.ecoPerfilMetricLine strong');
-      if(!nombre||!nota)return null;
-      var texto=nota.textContent.trim();
-      var valor=Number(texto.replace(/\s/g,'').replace(',','.'));
-      if(!Number.isFinite(valor))return null;
-      return {nombre:nombre.textContent.trim(),texto:texto,valor:valor};
-    }).filter(Boolean);
-    if(competencias.length<3)return;
-    trabajando=true;
-    try{
-      var max=Math.max(1,Math.max.apply(null,competencias.map(function(c){return c.valor;})));
-      var N=competencias.length,cx=180,cy=165,r=112;
-      function xy(i,f){var a=-Math.PI/2+Math.PI*2*i/N;return [cx+Math.cos(a)*r*f,cy+Math.sin(a)*r*f];}
-      function vertices(f){return competencias.map(function(c,i){return xy(i,typeof f==='function'?f(c):f).map(function(v){return v.toFixed(2);}).join(',');}).join(' ');}
-      var seccion=document.createElement('section');seccion.id='peRadialIndependiente';seccion.className='ecoPerfilCard';
-      var titulo=document.createElement('h3');titulo.textContent='Mis competencias · gráfica radial';titulo.style.cssText='font-size:22px;line-height:1.25;margin:0 0 14px;color:#263947';seccion.appendChild(titulo);
-      var ayuda=document.createElement('p');ayuda.textContent='Selecciona una competencia para consultar su resultado.';ayuda.style.cssText='font-size:16px;line-height:1.4;color:#52616b';seccion.appendChild(ayuda);
-      var grafico=crearSVG('svg',{viewBox:'0 0 360 350',role:'img','aria-label':'Gráfica radial de resultados publicados'},seccion);
-      grafico.style.cssText='display:block;width:100%;max-width:480px;height:auto;margin:auto';
-      [0.25,0.5,0.75,1].forEach(function(f){crearSVG('polygon',{points:vertices(f),fill:'none',stroke:'#d8dfe3','stroke-width':1.4},grafico);});
-      competencias.forEach(function(c,i){var p=xy(i,1);crearSVG('line',{x1:cx,y1:cy,x2:p[0],y2:p[1],stroke:'#e2e6e9'},grafico);});
-      crearSVG('polygon',{points:vertices(function(c){return Math.max(0,Math.min(1,c.valor/max));}),fill:'#415969','fill-opacity':'.16',stroke:'#415969','stroke-width':3},grafico);
-      var botones=document.createElement('div');botones.style.cssText='display:flex;flex-wrap:wrap;gap:9px;margin-top:12px';
-      var detalle=document.createElement('div');detalle.style.cssText='background:#f5f7f9;border-radius:14px;padding:18px;margin-top:18px';
-      var nombre=document.createElement('div');nombre.style.cssText='font-size:18px;line-height:1.35;font-weight:850;color:#263947';detalle.appendChild(nombre);
-      var calificacion=document.createElement('div');calificacion.style.cssText='font-size:22px;font-weight:800;color:#415969;margin-top:8px';detalle.appendChild(calificacion);
-      var nota=document.createElement('p');nota.textContent='Los comportamientos y la autoevaluación aún no están vinculados por competencia en los resultados disponibles.';nota.style.cssText='font-size:14px;line-height:1.4;color:#52616b;margin:12px 0 0';detalle.appendChild(nota);
-      var puntos=[];
-      function seleccionar(i){
-        var c=competencias[i];nombre.textContent=c.nombre;calificacion.textContent='Calificación publicada: '+c.texto;
-        puntos.forEach(function(p,j){p.setAttribute('fill',j===i?'#263947':'#415969');p.setAttribute('r',j===i?'8':'6');});
-        Array.prototype.forEach.call(botones.children,function(b,j){b.style.background=j===i?'#984A32':'#fff';b.style.color=j===i?'#fff':'#263947';b.setAttribute('aria-pressed',String(j===i));});
-      }
-      competencias.forEach(function(c,i){
-        var p=xy(i,Math.max(0,Math.min(1,c.valor/max)));
-        var circulo=crearSVG('circle',{cx:p[0],cy:p[1],r:6,fill:'#415969',stroke:'#fff','stroke-width':2,tabindex:0,role:'button','aria-label':c.nombre+', '+c.texto},grafico);
-        circulo.style.cursor='pointer';circulo.addEventListener('click',function(){seleccionar(i);});circulo.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();seleccionar(i);}});puntos.push(circulo);
-        var b=document.createElement('button');b.type='button';b.textContent=c.nombre;b.style.cssText='padding:12px 14px;border:1px solid #d6dde2;border-radius:11px;background:#fff;color:#263947;font-size:15px;line-height:1.35;font-weight:800;cursor:pointer';b.addEventListener('click',function(){seleccionar(i);});botones.appendChild(b);
-      });
-      seccion.appendChild(botones);seccion.appendChild(detalle);
-      tarjetaCompetencias.parentNode.insertBefore(seccion,tarjetaCompetencias);
-      seleccionar(0);
-    }catch(error){console.warn('No se pudo crear la radial de Perfil ECO',error);}
-    finally{trabajando=false;}
+  function valido(v){
+    if(v===null||v===undefined||String(v).trim()==='')return null;
+    var n=Number(v);return Number.isFinite(n)&&n>=1&&n<=5?n:null;
   }
-  var observador=new MutationObserver(function(){
-    if(raiz.querySelector('#peRadialIndependiente'))return;
-    insertarRadial();
-  });
-  observador.observe(raiz,{childList:true,subtree:true});
+  function fmt(v){return v===null?'—':v.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2});}
+  function pintar(destino,data){
+    var evals=Array.isArray(data.competencias)?data.competencias:[];
+    if(evals.length<3)return;
+    var auto=data.autoevaluacion,autodisponible=!!(auto&&auto.disponible===true&&Array.isArray(auto.competencias));
+    var nombreClave=function(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');};
+    var porNombre=new Map();
+    if(autodisponible)auto.competencias.forEach(function(x){porNombre.set(nombreClave(x.nombre),valido(x.valor));});
+    var ejes=evals.map(function(x,i){
+      var clave=nombreClave(x.nombre);
+      return {nombre:String(x.nombre||'Competencia '+(i+1)),evaluacion:valido(x.valor),
+        autoevaluacion:autodisponible&&porNombre.has(clave)?porNombre.get(clave):null};
+    });
+    var existeAuto=ejes.some(function(x){return x.autoevaluacion!==null;});
+    var cards=destino.querySelectorAll('.ecoPerfilCard');
+    var antes=cards.length?cards[0]:null;
+    var seccion=agregar('section','ecoPerfilCard pePerfilComparativo',null,null);
+    seccion.id='peRadialIndependiente';
+    seccion.style.cssText='margin-bottom:22px';
+    agregar('h3','','Comparación de percepción · 2026',seccion);
+    agregar('p','','Compara cómo te evaluaron con tu propia autoevaluación, por competencia.',seccion).style.cssText='color:#52616b;line-height:1.45;margin-top:8px;font-size:15px';
+    var controles=agregar('div','',null,seccion);
+    controles.style.cssText='display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 8px';
+    var opciones=[{clave:'evaluacion',nombre:'Evaluación recibida',color:'#415969',visible:true},
+      {clave:'autoevaluacion',nombre:'Autoevaluación',color:'#bd3a35',visible:existeAuto}];
+    var botones={},visibles={evaluacion:true,autoevaluacion:existeAuto};
+    opciones.forEach(function(opt){
+      var btn=agregar('button','',opt.nombre,controles);
+      btn.type='button';btn.style.cssText='border:2px solid '+opt.color+';border-radius:10px;padding:10px 12px;font-size:14px;font-weight:800;cursor:pointer;min-height:45px';
+      btn.setAttribute('aria-pressed','true');btn.dataset.color=opt.color;botones[opt.clave]=btn;
+      if(opt.clave==='autoevaluacion'&&!existeAuto){btn.disabled=true;btn.setAttribute('aria-pressed','false');}
+      else btn.addEventListener('click',function(){visibles[opt.clave]=!visibles[opt.clave];actualizar();});
+    });
+    if(!existeAuto){
+      var motivo=auto===undefined?'Comparativo de autoevaluación pendiente de actualización del Servicio de Datos.':
+        auto.estado==='error'?'No fue posible consultar la autoevaluación en este momento.':
+        'Autoevaluación pendiente. Se muestra únicamente la evaluación recibida.';
+      agregar('p','',motivo,seccion).style.cssText='font-size:13px;color:#687780;margin:6px 0 8px';
+    }
+    var N=ejes.length,cx=210,cy=196,R=135;
+    var lienzo=svg('svg',{viewBox:'0 0 420 395',role:'img','aria-label':'Gráfica radial comparativa de cinco competencias en escala de uno a cinco'},seccion);
+    lienzo.style.cssText='display:block;width:100%;max-width:500px;height:auto;margin:0 auto 8px';
+    function punto(i,f){var ang=-Math.PI/2+2*Math.PI*i/N;return [cx+Math.cos(ang)*R*f,cy+Math.sin(ang)*R*f];}
+    function verticesSerie(clave){return ejes.map(function(x,i){var v=x[clave],p=punto(i,v===null?0:v/5);return p.map(function(z){return z.toFixed(2)}).join(',');}).join(' ');}
+    for(var k=1;k<=5;k++){
+      var nivel=ejes.map(function(_,i){return punto(i,k/5).map(function(v){return v.toFixed(2)}).join(',');}).join(' ');
+      svg('polygon',{points:nivel,fill:'none',stroke:k===5?'#b6c1c9':'#e0e6eb','stroke-width':k===5?1.5:1},lienzo);
+      var marca=punto(0,k/5);
+      var t=svg('text',{x:marca[0]+8,y:marca[1]-2,'font-size':10,fill:'#687780'},lienzo);t.textContent=k;
+    }
+    var radios=[];
+    ejes.forEach(function(x,i){
+      var p=punto(i,1);
+      var l=svg('line',{x1:cx,y1:cy,x2:p[0],y2:p[1],stroke:'#d2dce3','stroke-width':1.3},lienzo);
+      radios.push(l);
+    });
+    var g1=svg('polygon',{points:verticesSerie('evaluacion'),fill:'#415969','fill-opacity':'.12',stroke:'#415969','stroke-width':3,'stroke-linejoin':'round'},lienzo);
+    var g2=svg('polygon',{points:verticesSerie('autoevaluacion'),fill:'#bd3a35','fill-opacity':'.10',stroke:'#bd3a35','stroke-width':3,'stroke-linejoin':'round'},lienzo);
+    var puntos=[[],[]],seleccionado=0;
+    [{campo:'evaluacion',color:'#415969'},{campo:'autoevaluacion',color:'#bd3a35'}].forEach(function(serie,j){
+      ejes.forEach(function(x,i){
+        if(x[serie.campo]===null)return;
+        var p=punto(i,x[serie.campo]/5);
+        var c=svg('circle',{cx:p[0],cy:p[1],r:5.5,fill:serie.color,stroke:'#fff','stroke-width':2,tabindex:0,role:'button','aria-label':x.nombre+' '+serie.campo+': '+fmt(x[serie.campo])},lienzo);
+        c.style.cursor='pointer';c.addEventListener('click',function(){seleccionar(i);});
+        c.addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();seleccionar(i);}});
+        puntos[j].push({n:c,i:i});
+      });
+    });
+    var selectors=agregar('div','',null,seccion);
+    selectors.style.cssText='display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px';
+    var detalle=agregar('div','',null,seccion);
+    detalle.style.cssText='border:1px solid #e1e7eb;border-radius:14px;padding:15px;background:#f5f7f9';
+    var dTitulo=agregar('div','',null,detalle);dTitulo.style.cssText='font-size:18px;font-weight:850;color:#273945';
+    var dEval=agregar('div','',null,detalle);dEval.style.cssText='font-size:15px;margin-top:8px;color:#415969;font-weight:750';
+    var dAuto=agregar('div','',null,detalle);dAuto.style.cssText='font-size:15px;margin-top:5px;color:#a82c29;font-weight:750';
+    var dBrecha=agregar('div','',null,detalle);dBrecha.style.cssText='font-size:14px;margin-top:8px;color:#52616b';
+    var selectorBtns=[];
+    ejes.forEach(function(x,i){
+      var b=agregar('button','',x.nombre,selectors);
+      b.type='button';b.style.cssText='border:1px solid #cbd5dc;border-radius:10px;padding:10px 12px;min-height:44px;font-size:13px;line-height:1.35;font-weight:800;cursor:pointer';
+      b.addEventListener('click',function(){seleccionar(i);});
+      selectorBtns.push(b);
+    });
+    function seleccionar(i){seleccionado=i;actualizar();}
+    function actualizar(){
+      g1.style.display=visibles.evaluacion?'':'none';
+      g2.style.display=visibles.autoevaluacion?'':'none';
+      puntos[0].forEach(function(x){x.n.style.display=visibles.evaluacion?'':'none';x.n.setAttribute('r',x.i===seleccionado?8:5.5)});
+      puntos[1].forEach(function(x){x.n.style.display=visibles.autoevaluacion?'':'none';x.n.setAttribute('r',x.i===seleccionado?8:5.5)});
+      radios.forEach(function(l,j){l.setAttribute('stroke',j===seleccionado?'#8c9fab':'#d2dce3');l.setAttribute('stroke-width',j===seleccionado?'3':'1.3');});
+      opciones.forEach(function(o){
+        var b=botones[o.clave],on=visibles[o.clave]&&!(o.clave==='autoevaluacion'&&!existeAuto);
+        b.style.background=on?o.color:'#fff';b.style.color=on?'#fff':'#40505b';b.setAttribute('aria-pressed',String(on));
+      });
+      selectorBtns.forEach(function(b,i){var on=i===seleccionado;b.style.background=on?'#415969':'#fff';b.style.color=on?'#fff':'#263947';b.setAttribute('aria-pressed',String(on));});
+      var x=ejes[seleccionado];dTitulo.textContent=x.nombre;
+      dEval.textContent='Evaluación recibida: '+fmt(x.evaluacion);
+      dAuto.textContent=existeAuto?'Autoevaluación: '+fmt(x.autoevaluacion):'Autoevaluación: —';
+      dBrecha.textContent=x.evaluacion!==null&&x.autoevaluacion!==null?'Brecha (Auto − Recibida): '+fmt(x.autoevaluacion-x.evaluacion):'Brecha: no disponible';
+    }
+    seleccionar(0);
+    if(antes)destino.insertBefore(seccion,antes);else destino.appendChild(seccion);
+  }
+  window.peDibujarRadarPerfilComparativo_=pintar;
 })();
 </script>
 <script src="./eco-portadas.js"></script>

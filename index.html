@@ -2126,7 +2126,7 @@ iniciarDesdeUrl_();
   function fmt(v){return v===null?'—':v.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2});}
   function pintar(destino,data){
     var evals=Array.isArray(data.competencias)?data.competencias:[];
-    if(evals.length<3)return;
+    if(evals.length!==5)return;
     var auto=data.autoevaluacion,autodisponible=!!(auto&&auto.disponible===true&&Array.isArray(auto.competencias));
     var nombreClave=function(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');};
     var porNombre=new Map();
@@ -2136,7 +2136,7 @@ iniciarDesdeUrl_();
       return {nombre:String(x.nombre||'Competencia '+(i+1)),evaluacion:valido(x.valor),
         autoevaluacion:autodisponible&&porNombre.has(clave)?porNombre.get(clave):null};
     });
-    var existeAuto=ejes.some(function(x){return x.autoevaluacion!==null;});
+    var existeAuto=autodisponible&&ejes.every(function(x){return x.autoevaluacion!==null;});
     var cards=destino.querySelectorAll('.ecoPerfilCard');
     var antes=cards.length?cards[0]:null;
     var seccion=agregar('section','ecoPerfilCard pePerfilComparativo',null,null);
@@ -2144,24 +2144,26 @@ iniciarDesdeUrl_();
     seccion.style.cssText='margin-bottom:22px';
     agregar('h3','','Comparación de percepción · 2026',seccion);
     agregar('p','','Compara cómo te evaluaron con tu propia autoevaluación, por competencia.',seccion).style.cssText='color:#52616b;line-height:1.45;margin-top:8px;font-size:15px';
-    var controles=agregar('div','',null,seccion);
-    controles.style.cssText='display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 8px';
-    var opciones=[{clave:'evaluacion',nombre:'Evaluación recibida',color:'#415969',visible:true},
-      {clave:'autoevaluacion',nombre:'Autoevaluación',color:'#bd3a35',visible:existeAuto}];
-    var botones={},visibles={evaluacion:true,autoevaluacion:existeAuto};
-    opciones.forEach(function(opt){
-      var btn=agregar('button','',opt.nombre,controles);
-      btn.type='button';btn.style.cssText='border:2px solid '+opt.color+';border-radius:10px;padding:10px 12px;font-size:14px;font-weight:800;cursor:pointer;min-height:45px';
-      btn.setAttribute('aria-pressed','true');btn.dataset.color=opt.color;botones[opt.clave]=btn;
-      if(opt.clave==='autoevaluacion'&&!existeAuto){btn.disabled=true;btn.setAttribute('aria-pressed','false');}
-      else btn.addEventListener('click',function(){visibles[opt.clave]=!visibles[opt.clave];actualizar();});
-    });
-    if(!existeAuto){
-      var motivo=auto===undefined?'Comparativo de autoevaluación pendiente de actualización del Servicio de Datos.':
-        auto.estado==='error'?'No fue posible consultar la autoevaluación en este momento.':
-        'Autoevaluación pendiente. Se muestra únicamente la evaluación recibida.';
-      agregar('p','',motivo,seccion).style.cssText='font-size:13px;color:#687780;margin:6px 0 8px';
+    var leyenda=agregar('div','',null,seccion);
+    leyenda.style.cssText='display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;margin:16px 0 10px';
+    function insignia(color,etiqueta){
+      var item=agregar('span','',null,leyenda);
+      item.style.cssText='display:inline-flex;align-items:center;gap:9px;font-size:14px;font-weight:750;color:#263947';
+      var marca=agregar('span','',null,item);
+      marca.style.cssText='display:inline-block;width:26px;height:5px;border-radius:5px;background:'+color;
+      agregar('span','',etiqueta,item);
     }
+    insignia('#415969','Evaluación recibida');
+    if(existeAuto)insignia('#bd3a35','Autoevaluación');
+    if(!existeAuto){
+      var estado=auto&&auto.estado;
+      var motivo=estado==='error'||auto===undefined||auto===null?
+        'No fue posible consultar la autoevaluación en este momento.':
+        'Autoevaluación pendiente.';
+      agregar('p','',motivo,seccion).style.cssText='font-size:14px;font-weight:650;color:#596974;margin:9px 0 8px';
+    }
+    agregar('p','','Toca el nombre de una competencia en la gráfica para consultar sus resultados.',seccion)
+      .style.cssText='font-size:13px;color:#687780;line-height:1.4;margin:6px 0 8px';
     var N=ejes.length,cx=210,cy=196,R=135;
     var lienzo=svg('svg',{viewBox:'0 0 420 395',role:'img','aria-label':'Gráfica radial comparativa de cinco competencias en escala de uno a cinco'},seccion);
     lienzo.style.cssText='display:block;width:100%;max-width:500px;height:auto;margin:0 auto 8px';
@@ -2192,37 +2194,80 @@ iniciarDesdeUrl_();
         puntos[j].push({n:c,i:i});
       });
     });
-    var selectors=agregar('div','',null,seccion);
-    selectors.style.cssText='display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px';
+    var etiquetas=[];
+    var posiciones=[
+      {x:135,y:4,w:150,h:46},
+      {x:284,y:95,w:133,h:46},
+      {x:277,y:327,w:140,h:48},
+      {x:3,y:327,w:140,h:48},
+      {x:3,y:95,w:133,h:46}
+    ];
+    var etiquetasTexto=[
+      ['Generador de','Impacto'],
+      ['Agente de Mejora','Continua'],
+      ['Desarrollador de','Talento'],
+      ['Líder de','Negocio'],
+      ['Aliado','Estratégico']
+    ];
+    ejes.forEach(function(x,i){
+      var p=posiciones[i],grupo=svg('g',{
+        role:'button',tabindex:0,'aria-label':'Seleccionar '+x.nombre,'aria-pressed':'false'
+      },lienzo);
+      grupo.style.cssText='cursor:pointer;outline:none';
+      var fondo=svg('rect',{x:p.x,y:p.y,width:p.w,height:p.h,rx:10,
+        fill:'#f5f7f9',stroke:'#cfd9e0','stroke-width':1.3},grupo);
+      var palabras=etiquetasTexto[i];
+      var titulo=svg('text',{x:p.x+p.w/2,y:p.y+18,'font-size':13,
+        'text-anchor':'middle',fill:'#344c5b','font-weight':700},grupo);
+      var primera=svg('tspan',{x:p.x+p.w/2},titulo);primera.textContent=palabras[0];
+      var segunda=svg('tspan',{x:p.x+p.w/2,dy:16},titulo);segunda.textContent=palabras[1];
+      grupo.addEventListener('click',function(){seleccionar(i);});
+      grupo.addEventListener('keydown',function(ev){
+        if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();seleccionar(i);}
+        else if(ev.key==='ArrowRight'||ev.key==='ArrowLeft'){
+          ev.preventDefault();var paso=ev.key==='ArrowRight'?1:-1;
+          var nuevo=(i+paso+ejes.length)%ejes.length;etiquetas[nuevo].grupo.focus();seleccionar(nuevo);
+        }
+      });
+      etiquetas.push({grupo:grupo,fondo:fondo,titulo:titulo});
+    });
     var detalle=agregar('div','',null,seccion);
     detalle.style.cssText='border:1px solid #e1e7eb;border-radius:14px;padding:15px;background:#f5f7f9';
     var dTitulo=agregar('div','',null,detalle);dTitulo.style.cssText='font-size:18px;font-weight:850;color:#273945';
     var dEval=agregar('div','',null,detalle);dEval.style.cssText='font-size:15px;margin-top:8px;color:#415969;font-weight:750';
     var dAuto=agregar('div','',null,detalle);dAuto.style.cssText='font-size:15px;margin-top:5px;color:#a82c29;font-weight:750';
     var dBrecha=agregar('div','',null,detalle);dBrecha.style.cssText='font-size:14px;margin-top:8px;color:#52616b';
-    var selectorBtns=[];
-    ejes.forEach(function(x,i){
-      var b=agregar('button','',x.nombre,selectors);
-      b.type='button';b.style.cssText='border:1px solid #cbd5dc;border-radius:10px;padding:10px 12px;min-height:44px;font-size:13px;line-height:1.35;font-weight:800;cursor:pointer';
-      b.addEventListener('click',function(){seleccionar(i);});
-      selectorBtns.push(b);
-    });
     function seleccionar(i){seleccionado=i;actualizar();}
     function actualizar(){
-      g1.style.display=visibles.evaluacion?'':'none';
-      g2.style.display=visibles.autoevaluacion?'':'none';
-      puntos[0].forEach(function(x){x.n.style.display=visibles.evaluacion?'':'none';x.n.setAttribute('r',x.i===seleccionado?8:5.5)});
-      puntos[1].forEach(function(x){x.n.style.display=visibles.autoevaluacion?'':'none';x.n.setAttribute('r',x.i===seleccionado?8:5.5)});
-      radios.forEach(function(l,j){l.setAttribute('stroke',j===seleccionado?'#8c9fab':'#d2dce3');l.setAttribute('stroke-width',j===seleccionado?'3':'1.3');});
-      opciones.forEach(function(o){
-        var b=botones[o.clave],on=visibles[o.clave]&&!(o.clave==='autoevaluacion'&&!existeAuto);
-        b.style.background=on?o.color:'#fff';b.style.color=on?'#fff':'#40505b';b.setAttribute('aria-pressed',String(on));
+      g1.style.display='';
+      g2.style.display=existeAuto?'':'none';
+      puntos[0].forEach(function(x){
+        x.n.style.display='';x.n.setAttribute('r',x.i===seleccionado?8:5.5);
       });
-      selectorBtns.forEach(function(b,i){var on=i===seleccionado;b.style.background=on?'#415969':'#fff';b.style.color=on?'#fff':'#263947';b.setAttribute('aria-pressed',String(on));});
+      puntos[1].forEach(function(x){
+        x.n.style.display=existeAuto?'':'none';x.n.setAttribute('r',x.i===seleccionado?8:5.5);
+      });
+      radios.forEach(function(l,j){
+        l.setAttribute('stroke',j===seleccionado?'#8299a8':'#d2dce3');
+        l.setAttribute('stroke-width',j===seleccionado?'3':'1.3');
+      });
+      etiquetas.forEach(function(item,j){
+        var on=j===seleccionado;
+        item.fondo.setAttribute('fill',on?'#e4edf3':'#f5f7f9');
+        item.fondo.setAttribute('stroke',on?'#415969':'#cfd9e0');
+        item.fondo.setAttribute('stroke-width',on?2.4:1.3);
+        item.titulo.setAttribute('fill',on?'#203b4d':'#344c5b');
+        item.grupo.setAttribute('aria-pressed',String(on));
+      });
       var x=ejes[seleccionado];dTitulo.textContent=x.nombre;
       dEval.textContent='Evaluación recibida: '+fmt(x.evaluacion);
-      dAuto.textContent=existeAuto?'Autoevaluación: '+fmt(x.autoevaluacion):'Autoevaluación: —';
-      dBrecha.textContent=x.evaluacion!==null&&x.autoevaluacion!==null?'Brecha (Auto − Recibida): '+fmt(x.autoevaluacion-x.evaluacion):'Brecha: no disponible';
+      dAuto.style.display=existeAuto?'':'none';
+      dBrecha.style.display=existeAuto?'':'none';
+      if(existeAuto){
+        dAuto.textContent='Autoevaluación: '+fmt(x.autoevaluacion);
+        var diferencia=x.autoevaluacion-x.evaluacion;
+        dBrecha.textContent='Brecha (Auto − Recibida): '+(diferencia>0?'+':'')+fmt(diferencia);
+      }
     }
     seleccionar(0);
     if(antes)destino.insertBefore(seccion,antes);else destino.appendChild(seccion);

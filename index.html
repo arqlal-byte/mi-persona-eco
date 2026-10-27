@@ -610,7 +610,7 @@ html.eco-install-first #ecoInstallPrincipal{display:block}
 @media(min-width:700px){#ecoInstallPrincipal{padding-top:42px}}
 </style>
 <script>
-(function(){var installed=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;if(!installed)document.documentElement.classList.add('eco-install-first');})();
+(function(){var installed=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;var isMobileBrowser=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)||((navigator.platform==='MacIntel')&&navigator.maxTouchPoints>1);if(!installed&&isMobileBrowser)document.documentElement.classList.add('eco-install-first');})();
 </script>
 <style>
 /* Pantalla de acceso simplificada: el formulario aparece sin banners en conexión oficial. */
@@ -618,6 +618,45 @@ html.eco-install-first #ecoInstallPrincipal{display:block}
 #login .peFirstAccessLink:hover{color:#173f59}
 #login .peFirstAccessLink:focus-visible{outline:3px solid #245f83;outline-offset:3px;border-radius:6px}
 #login #loginError:empty{display:none}
+</style>
+<style id="eco-vista-escritorio-20261027">
+/* Adaptación de Mi Persona ECO para equipos de escritorio.
+   Únicamente presentación: sin cambios en datos, sesiones, enlaces ni validaciones.
+   La vista móvil existente se conserva. */
+.peQuickLinksTitle{display:none}
+@media screen and (min-width:901px) and (hover:hover) and (pointer:fine){
+  body{background:#e7ecef}
+  .shell{max-width:1320px;margin:0 auto;min-height:100dvh;background:#f4f6f8;box-shadow:0 10px 45px rgba(25,43,57,.12);padding-bottom:34px}
+  .logoHeader{min-height:110px;padding:13px 36px}
+  .officialLogo{width:min(380px,70vw);max-width:380px;max-height:94px}
+  .top{padding:20px 46px}
+  .top .brand{font-size:13px}
+  .top h1{font-size:27px}
+  .screen{padding:30px 46px 60px}
+  #login,#validation,#adminSelect{max-width:565px;margin:30px auto 0;padding:32px 36px 40px;background:#fff;border:1px solid #dce3e7;border-radius:18px;box-shadow:0 8px 24px rgba(23,33,38,.06)}
+  #home{max-width:none}
+  #home .peTabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:6px;margin:17px 0 26px}
+  #home .peTabs .peTab{font-size:16px!important;min-height:52px;padding:12px}
+  #home #peTabActividades{display:grid;grid-template-columns:minmax(300px,.88fr) minmax(0,1.12fr);gap:20px 26px;align-items:stretch}
+  #home #developmentProgress{grid-column:1;grid-row:1;margin:0;min-width:0}
+  #home .peQuickLinks{grid-column:2;grid-row:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:16px;padding:22px 26px;background:#fff;border:1px solid #dde3e7;border-radius:22px;box-shadow:0 5px 19px rgba(23,33,38,.045)}
+  #home .peQuickLinksTitle{display:block;font-size:22px;font-weight:900;color:#26323c;margin-bottom:5px}
+  #home .peQuickLinks #peEvaluacion360,#home .peQuickLinks #peAsistenteCultura{width:100%!important;margin:0!important;min-height:82px!important;display:flex!important;align-items:center;justify-content:center;padding:19px 20px!important;font-size:18px!important;text-align:center;line-height:1.35}
+  #home #peTabActividades>.sectionTitle{grid-column:1/-1;margin:8px 0 0;font-size:25px}
+  #home #activities{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 24px;align-items:stretch}
+  #home #activities>.activityGroupTitle,#home #activities>.activityAllDone,#home #activities>.empty{grid-column:1/-1;min-width:0;margin:14px 0 0}
+  #home #activities>.activity{min-width:0;margin:0}
+  #home #activities>.activity.activityFeed{display:flex;flex-direction:column}
+  #home #activities>.activity.activityFeed .activityFeedBody{flex:1}
+  #home #activities>.activity.activityFeed .activityFeedTitle{font-size:23px;line-height:1.24}
+  #home #activities>.activity.activityCompleted{align-self:stretch}
+  #home #peTabFamilia #familyActivities{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+  #home #peTabFamilia .familyActivityCard{min-width:0;margin:0}
+  #home #peTabFamilia .familyActivityTitle{font-size:23px;line-height:1.25}
+  #home #peTabFamilia .familyActivityBody{padding:22px}
+  #home #peTabPerfil,#home #peTabMensajes{min-width:0}
+  #home #peMensajesLista{max-width:1040px;margin:0 auto}
+}
 </style>
 </head>
 <body>
@@ -744,9 +783,11 @@ html.eco-install-first #ecoInstallPrincipal{display:block}
       <div id="progressMessage" class="progressMessage"></div>
       <div id="progressCelebration" class="progressCelebration" aria-hidden="true">✦ ✦ ✦</div>
     </section>
+    <div class="peQuickLinks"><div class="peQuickLinksTitle">Accesos rápidos</div>
     <a id="peEvaluacion360" class="primary" style="display:block;box-sizing:border-box;width:100%;height:auto;min-height:70px;padding:18px 16px;text-align:center;text-decoration:none;line-height:1.3;margin:0 0 26px;" href="https://script.google.com/macros/s/AKfycbyYfau3oEdwrb4eoPjep-LbJijamSxF78QTVdj9jiNhP0DeMRJWCwb5zkKhMhMz8H7I/exec" target="_blank" rel="noopener noreferrer" onclick="if(!persona||!persona.nomina){alert('No se pudo identificar tu número de nómina.');return false;}this.href=this.href.split('?')[0]+'?nomina='+encodeURIComponent(String(persona.nomina).trim());">Evaluación 360</a>
     <!-- ACCESO ASISTENTE CULTURA ECO (independiente; sin transmitir datos del colaborador). -->
     <button id="peAsistenteCultura" type="button" class="primary" style="display:block;box-sizing:border-box;width:100%;height:auto;min-height:70px;padding:18px 16px;text-align:center;line-height:1.3;margin:0 0 26px;background:#415969;cursor:pointer;" onclick="peAbrirAsistenteCulturaECO_()">Asistente Cultura ECO</button>
+    </div>
     <div class="sectionTitle">Mis actividades</div>
     <div id="activities"></div>
     </div>

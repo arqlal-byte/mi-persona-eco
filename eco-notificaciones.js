@@ -39,83 +39,110 @@
     css.id = ESTILO_ID;
     css.textContent = `
 
-      /* ECO: prioridad visual absoluta al CONTENIDO de los mensajes. */
-      #${CAMPANA_ID} {position:relative;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;
-        width:50px;height:50px;border:1px solid #c9d4db;border-radius:14px;background:#fff;color:#334f5f;
-        cursor:pointer;margin-left:10px;touch-action:manipulation;}
+      /* Diseño ejecutivo ECO — mensaje primero, sin tamaños desproporcionados. */
+      #${CAMPANA_ID} {
+        position:relative;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;
+        width:48px;height:48px;border:1px solid #d5dfe5;border-radius:13px;
+        background:#fff;color:#415969;cursor:pointer;margin-left:8px;touch-action:manipulation;
+      }
       #${CAMPANA_ID}[hidden] {display:none!important;}
       #${CAMPANA_ID}:focus-visible {outline:3px solid #984a32;outline-offset:3px;}
-      #${CAMPANA_ID} svg {width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
-      #${CONTADOR_ID} {position:absolute;top:-7px;right:-8px;min-width:22px;height:22px;padding:1px 5px;
-        border-radius:16px;background:#984a32;color:#fff;display:flex;align-items:center;justify-content:center;
-        font-size:12px!important;line-height:1;font-weight:800;box-sizing:border-box;}
+      #${CAMPANA_ID} svg {width:24px;height:24px;stroke:currentColor;fill:none;
+        stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
+      #${CONTADOR_ID} {position:absolute;top:-6px;right:-7px;min-width:22px;height:22px;padding:1px 5px;
+        border-radius:20px;background:#984a32;color:#fff;display:flex;align-items:center;justify-content:center;
+        font-size:12px!important;line-height:1;font-weight:750;box-sizing:border-box;}
       #${CONTADOR_ID}.hidden {display:none;}
 
-      /* El aviso es discreto. El mensaje es el elemento dominante. */
-      #${DIALOGO_ID} {width:min(94vw,650px);max-width:94vw;max-height:88dvh;overflow-y:auto;
-        padding:24px;box-sizing:border-box;border:1px solid #a2adb6;border-radius:20px;
-        background:#edf1f4!important;color:#273943!important;box-shadow:0 22px 65px rgba(0,0,0,.35);}
-      #${DIALOGO_ID}::backdrop {background:rgba(0,0,0,.65);}
-      #${DIALOGO_ID} .ecoNotEyebrow {font-size:12px!important;font-weight:750;color:#5f6f7c!important;
-        line-height:1.3;letter-spacing:.05em;margin:0 0 5px;}
-      #${DIALOGO_ID} #ecoNotificacionesTitulo {font-size:15px!important;font-weight:650!important;
-        color:#566673!important;line-height:1.35;margin:0 0 13px;}
-      #${DIALOGO_ID} #ecoNotificacionesResumen {display:block!important;margin:0!important;
-        padding:25px 27px!important;background:#343e47!important;color:#fff!important;
-        border:2px solid #343e47!important;border-radius:18px!important;
-        font-size:29px!important;font-weight:800!important;line-height:1.48!important;
-        letter-spacing:.003em;white-space:pre-wrap;overflow-wrap:anywhere;
-        max-height:57dvh;overflow:auto;text-align:left;}
-      #${DIALOGO_ID} #ecoNotificacionesIntro {font-size:13px!important;font-weight:400!important;
-        color:#657482!important;line-height:1.45;margin:11px 2px 0!important;white-space:normal;}
-      #${DIALOGO_ID} .ecoNotBotones {display:flex;justify-content:flex-end;flex-wrap:wrap;
-        gap:11px;margin-top:23px;}
-      #${DIALOGO_ID} button {font-size:17px!important;min-height:52px;padding:11px 18px;
-        border-radius:11px;font-weight:800;cursor:pointer;}
-      #${DIALOGO_ID} .ecoNotPosponer {background:#fff;color:#3a4a55;border:2px solid #b7c3cb;}
-      #${DIALOGO_ID} .ecoNotAbrir {background:#343e47;color:#fff;border:2px solid #343e47;}
+      /* Aviso: fondo blanco y mensaje azul grisáceo. */
+      #${DIALOGO_ID} {width:min(92vw,590px);max-width:92vw;max-height:86dvh;overflow-y:auto;
+        background:#fff!important;color:#243846!important;border:1px solid #e0e7eb!important;
+        border-radius:18px!important;padding:24px!important;box-sizing:border-box;
+        box-shadow:0 20px 58px rgba(16,34,47,.25)!important;}
+      #${DIALOGO_ID}::backdrop {background:rgba(21,36,48,.58);}
+      #${DIALOGO_ID} .ecoNotEyebrow {font-size:12px!important;letter-spacing:.065em;
+        color:#596b79!important;font-weight:750!important;line-height:1.4;margin:0 0 5px;}
+      #${DIALOGO_ID} #ecoNotificacionesTitulo {font-size:13px!important;color:#70808d!important;
+        font-weight:500!important;line-height:1.4;margin:0 0 14px;}
+      #${DIALOGO_ID} #ecoNotificacionesResumen {
+        display:block;background:#415969!important;color:#fff!important;
+        border:1px solid #415969!important;border-radius:14px!important;
+        padding:20px 21px!important;margin:0!important;
+        font-size:19px!important;font-weight:500!important;line-height:1.58!important;
+        white-space:pre-wrap!important;overflow-wrap:anywhere;max-height:48dvh;overflow-y:auto;
+      }
+      #${DIALOGO_ID} #ecoNotificacionesIntro {font-size:12px!important;color:#71808d!important;
+        font-weight:400!important;line-height:1.45;margin:10px 2px 0!important;}
+      #${DIALOGO_ID} .ecoNotBotones {display:flex;flex-wrap:wrap;justify-content:flex-end;
+        gap:10px;margin-top:22px;}
+      #${DIALOGO_ID} button {font-size:15px!important;font-weight:700!important;
+        line-height:1.3;min-height:46px;padding:11px 17px;border-radius:10px;cursor:pointer;}
+      #${DIALOGO_ID} .ecoNotPosponer {background:#fff!important;color:#4c5e6b!important;
+        border:1px solid #ccd6dc!important;}
+      #${DIALOGO_ID} .ecoNotAbrir {background:#415969!important;color:#fff!important;
+        border:1px solid #415969!important;}
       #${DIALOGO_ID} button:focus-visible {outline:3px solid #984a32;outline-offset:3px;}
 
-      /* Historial: burbujas grises oscuras, cuerpo blanco y grande. */
-      #peMensajesLista {gap:18px;}
-      #peMensajesLista .peMensajeItem {background:#343e47!important;color:#fff!important;
-        border:1px solid #677683!important;border-radius:18px!important;padding:24px!important;
-        box-shadow:0 7px 23px rgba(0,0,0,.15);opacity:1!important;overflow-wrap:anywhere;}
-      #peMensajesLista .peMensajeLeido {background:#48535e!important;opacity:1!important;}
+      /* Historial: tarjetas blancas, texto real en burbujas oscuras. */
+      #peMensajesLista {gap:15px;}
+      #peMensajesLista .peMensajeItem {background:#fff!important;color:#263a47!important;
+        border:1px solid #d9e1e6!important;border-radius:15px!important;padding:18px!important;
+        box-shadow:0 4px 15px rgba(30,52,67,.07);opacity:1!important;overflow-wrap:anywhere;}
+      #peMensajesLista .peMensajeLeido {background:#fafbfd!important;opacity:1!important;}
       #peMensajesLista .peMensajeItem .peMensajeCabecera,
       #peMensajesLista .peMensajeItem .peMensajeCabecera strong,
       #peMensajesLista .peMensajeItem .peMensajeCabecera span,
-      #peMensajesLista .peMensajeItem .peMensajeReferencia,
-      #peMensajesLista .peMensajeItem > div {color:#dce5eb!important;font-size:14px!important;line-height:1.4!important;}
-      #peMensajesLista .peMensajeItem .peMensajeCuerpo {color:#fff!important;
-        font-size:26px!important;font-weight:800!important;line-height:1.53!important;
-        margin:19px 0 23px!important;white-space:pre-wrap!important;overflow-wrap:anywhere;}
+      #peMensajesLista .peMensajeItem .peMensajeReferencia {color:#667785!important;
+        font-size:13px!important;line-height:1.45!important;}
+      #peMensajesLista .peMensajeItem .peMensajeCabecera strong {font-weight:750!important;color:#405767!important;}
+      #peMensajesLista .peMensajeItem .peMensajeCabecera strong:nth-child(3) {
+        display:inline-flex;align-items:center;font-size:12px!important;
+        color:#9a452d!important;border:1px solid #e6c2b7;border-radius:100px;
+        background:#fff4f0;padding:4px 9px;margin-left:auto;
+      }
+      #peMensajesLista .peMensajeItem .peMensajeCuerpo {
+        display:block;background:#415969!important;color:#fff!important;
+        border-radius:12px!important;border:0!important;padding:18px 19px!important;
+        font-size:19px!important;font-weight:500!important;line-height:1.6!important;
+        margin:14px 0 12px!important;white-space:pre-wrap!important;overflow-wrap:anywhere;
+      }
       #peMensajesLista .peMensajeItem .peMensajeLeer,
-      #peMensajesLista .peMensajeItem .peMensajeVer {font-size:17px!important;
-        min-height:51px;border-radius:11px;padding:12px 16px;font-weight:800!important;
-        line-height:1.35!important;background:#fff!important;color:#283843!important;
-        border:2px solid #fff!important;white-space:normal;}
-      #peMensajesLista .peMensajeItem button:focus-visible {outline:3px solid #ffdaae;outline-offset:3px;}
+      #peMensajesLista .peMensajeItem .peMensajeVer {
+        font-size:15px!important;font-weight:700!important;line-height:1.3!important;
+        min-height:44px;border-radius:10px!important;padding:10px 14px!important;
+        white-space:normal;
+      }
+      #peMensajesLista .peMensajeItem .peMensajeVer {background:#415969!important;
+        border:1px solid #415969!important;color:#fff!important;}
+      #peMensajesLista .peMensajeItem .peMensajeLeer {background:#fff!important;
+        color:#415969!important;border:1px solid #9babb6!important;}
+      #peMensajesLista .peMensajeItem button:focus-visible {outline:3px solid #984a32;outline-offset:3px;}
 
-      /* Diálogo de lectura completa: el texto es lo más importante. */
-      #peMensajeDialogCompleto {background:#edf1f4!important;color:#273943!important;
-        border:1px solid #a2adb6;border-radius:20px;padding:24px;}
-      #peMensajeDialogCompleto h2 {font-size:15px!important;color:#64727f!important;font-weight:650!important;}
-      #peMensajeDialogCompleto .peMensajeDialogMeta {font-size:13px!important;color:#64727f!important;}
-      #peMensajeDialogCompleto .peMensajeDialogTexto {background:#343e47!important;color:#fff!important;
-        border-radius:16px;padding:24px;margin:15px 0 6px;font-size:26px!important;
-        font-weight:800!important;line-height:1.55!important;white-space:pre-wrap;overflow-wrap:anywhere;}
-      #peMensajeDialogCompleto .peMensajeDialogCerrar {background:#343e47!important;color:#fff!important;
-        border:2px solid #343e47;border-radius:11px;font-size:17px!important;min-height:52px;}
-      @media (max-width:480px) {
-        #${CAMPANA_ID} {width:46px;height:46px;margin-left:6px;}
-        #${DIALOGO_ID} {padding:18px;}
-        #${DIALOGO_ID} #ecoNotificacionesResumen {font-size:26px!important;padding:22px!important;}
-        #${DIALOGO_ID} .ecoNotBotones button {flex:1 1 100%;font-size:17px!important;}
-        #peMensajesLista .peMensajeItem {padding:20px!important;}
-        #peMensajesLista .peMensajeItem .peMensajeCuerpo {font-size:24px!important;}
-        #peMensajeDialogCompleto {padding:18px;}
-        #peMensajeDialogCompleto .peMensajeDialogTexto {font-size:24px!important;padding:20px;}
+      /* Lectura completa: mismo contraste y escala. */
+      #peMensajeDialogCompleto {background:#fff!important;color:#243846!important;
+        border:1px solid #e0e7eb;border-radius:18px!important;padding:24px!important;
+        box-shadow:0 20px 58px rgba(16,34,47,.25)!important;}
+      #peMensajeDialogCompleto h2 {font-size:18px!important;font-weight:750!important;
+        color:#344b59!important;margin-bottom:8px;}
+      #peMensajeDialogCompleto .peMensajeDialogMeta {font-size:13px!important;
+        color:#6a7b88!important;line-height:1.45;}
+      #peMensajeDialogCompleto .peMensajeDialogTexto {display:block;background:#415969!important;
+        color:#fff!important;font-size:19px!important;font-weight:500!important;
+        line-height:1.6!important;border-radius:12px!important;padding:20px!important;
+        margin:14px 0 5px!important;white-space:pre-wrap;overflow-wrap:anywhere;}
+      #peMensajeDialogCompleto .peMensajeDialogCerrar {background:#415969!important;
+        color:#fff!important;border:1px solid #415969!important;border-radius:10px!important;
+        font-size:15px!important;font-weight:750!important;min-height:46px;padding:11px 17px!important;}
+
+      @media(max-width:480px) {
+        #${CAMPANA_ID} {width:44px;height:44px;margin-left:5px;}
+        #${DIALOGO_ID} {padding:20px!important;}
+        #${DIALOGO_ID} #ecoNotificacionesResumen {font-size:18px!important;padding:18px!important;}
+        #${DIALOGO_ID} .ecoNotBotones button {flex:1 1 auto;min-width:125px;}
+        #peMensajesLista .peMensajeItem {padding:15px!important;}
+        #peMensajesLista .peMensajeItem .peMensajeCuerpo {font-size:18px!important;padding:17px!important;}
+        #peMensajeDialogCompleto {padding:20px!important;}
+        #peMensajeDialogCompleto .peMensajeDialogTexto {font-size:18px!important;padding:18px!important;}
       }
     `;
     document.head.appendChild(css);
@@ -157,7 +184,7 @@
     if (dlg) return dlg;
     dlg = document.createElement('dialog'); dlg.id = DIALOGO_ID;
     dlg.setAttribute('aria-labelledby','ecoNotificacionesTitulo');
-    const ceja = document.createElement('div'); ceja.className='ecoNotEyebrow'; ceja.textContent='MI PERSONA ECO';
+    const ceja = document.createElement('div'); ceja.className='ecoNotEyebrow'; ceja.textContent='COMUNICACIÓN DE RECURSOS HUMANOS';
     const titulo = document.createElement('h2'); titulo.id='ecoNotificacionesTitulo';
     const intro = document.createElement('p'); intro.id='ecoNotificacionesIntro';
     const resumen = document.createElement('p'); resumen.id='ecoNotificacionesResumen'; resumen.className='ecoNotResumen';

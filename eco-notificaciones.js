@@ -138,7 +138,7 @@
     const dlg = crearDialogo();
     porId('ecoNotificacionesTitulo').textContent = informacion.length===1
       ? 'Tienes un mensaje pendiente' : 'Tienes '+informacion.length+' mensajes pendientes';
-    porId('ecoNotificacionesIntro').textContent = 'Recursos Humanos tiene comunicaciones para ti. Puedes consultarlas ahora o después en Mensajes.';
+    porId('ecoNotificacionesIntro').textContent = informacion.some(x=>x.prioridad)?'Tienes una comunicación prioritaria de Recursos Humanos. Puedes consultarla ahora o después.':'Recursos Humanos tiene comunicaciones para ti. Puedes consultarlas ahora o después en Mensajes.';
     const primero=informacion[0];
     const texto=String(primero?.mensaje||'').trim();
     porId('ecoNotificacionesResumen').textContent = texto
@@ -159,14 +159,14 @@
     google.script.run.withSuccessHandler(r=>{
       if (numero!==consultaNumero || token!==tokenActual() || !activa()) return;
       if (!r || !r.ok || !Array.isArray(r.mensajes)) return;
-      pendientes=r.mensajes.filter(x=>x && !x.leido);
+      pendientes=r.mensajes.filter(x=>x && (!x.leido || (x.requiereConfirmacion && !x.confirmado))).sort((a,b)=>Number(!!b.prioridad)-Number(!!a.prioridad));
       contador(pendientes.length);
       if (avisar) mostrarAviso(pendientes);
     }).withFailureHandler(()=>{
       // El fallo de notificaciones no debe interrumpir el inicio de sesión.
       if (numero!==consultaNumero) return;
       ultimaConsulta=0;
-    }).obtenerMensajesPendientesPersonaECO(token);
+    })[root.EcoMensajeriaV2?.ready?.()?'eco2ObtenerMensajesPersonaECO':'obtenerMensajesPendientesPersonaECO'](token);
   }
 
   function limpiar(limpiarFirma) {
@@ -177,7 +177,7 @@
   function incorporarHistorial(mensajes) {
     if (!activa() || !Array.isArray(mensajes)) return;
     ++consultaNumero; // La lectura reciente prevalece sobre consultas anteriores.
-    pendientes = mensajes.filter(x=>x && !x.leido);
+    pendientes = mensajes.filter(x=>x && (!x.leido || (x.requiereConfirmacion && !x.confirmado)));
     contador(pendientes.length);
     ultimaConsulta = Date.now(); tokenConsultado=tokenActual();
   }

@@ -56,6 +56,9 @@ function aplicarAdornos(items){
 }
 function cargarV2(){
  if(!disponible()||!habilitada)return;
+ if(typeof peBotonSincronizarMensajes_==='function')peBotonSincronizarMensajes_();
+ const sincronizar=$('peSincronizarMensajes');
+ if(sincronizar){sincronizar.disabled=true;sincronizar.textContent='Sincronizando…';}
  const sesion=token(),actual=++carga,lista=$('peMensajesLista');
  if(lista)lista.textContent='Consultando mensajes…';
  google.script.run.withSuccessHandler(r=>{
@@ -64,9 +67,11 @@ function cargarV2(){
   const mensajes=r.mensajes.slice().sort((a,b)=>Number(!!b.prioridad)-Number(!!a.prioridad));
   // Las variables de la interfaz original conservan el historial por sesión.
   try{peMensajesCache_=mensajes;peMensajesCacheToken_=sesion;}catch(_){}
+  if(sincronizar){sincronizar.disabled=false;sincronizar.textContent='↻ Sincronizar mensajes';}
   if(typeof pePintarMensajes_==='function')pePintarMensajes_(mensajes);
  }).withFailureHandler(e=>{
   if(sesion!==token()||actual!==carga)return;
+  if(sincronizar){sincronizar.disabled=false;sincronizar.textContent='↻ Sincronizar mensajes';}
   if(lista)lista.textContent='No fue posible consultar mensajes: '+((e&&e.message)||'Error de comunicación');
  }).eco2ObtenerMensajesPersonaECO(sesion);
 }

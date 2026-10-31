@@ -33,6 +33,7 @@
     "guardarEvidenciaActividadPersonaECO",
     "guardarEvidenciaDocumentalPersonaECO",
     "marcarMensajeLeidoPersonaECO",
+    "eco2CapacidadesPersonaECO","eco2ObtenerMensajesPersonaECO","eco2ConfirmarMensajeECO",
     "crearContrasenaPersonaECO",
     "seleccionarPersonaAdminPersonaECO",
     "cambiarPersonaAdminPersonaECO"
@@ -110,7 +111,7 @@
     'obtenerMensajesPendientesPersonaECO','obtenerHistorialMensajesPersonaECO',
     'guardarActividadPersonaECO','guardarRespuestaActividadPersonaECO',
     'guardarEvidenciaActividadPersonaECO','guardarEvidenciaDocumentalPersonaECO',
-    'marcarMensajeLeidoPersonaECO','seleccionarPersonaAdminPersonaECO',
+    'marcarMensajeLeidoPersonaECO','eco2CapacidadesPersonaECO','eco2ObtenerMensajesPersonaECO','eco2ConfirmarMensajeECO','seleccionarPersonaAdminPersonaECO',
     'cambiarPersonaAdminPersonaECO'
   ]);
   var invalidPersonaTokens = new Set();

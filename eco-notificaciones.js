@@ -38,93 +38,84 @@
     const css = document.createElement('style');
     css.id = ESTILO_ID;
     css.textContent = `
-      #${CAMPANA_ID} { position:relative;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;
+
+      /* ECO: prioridad visual absoluta al CONTENIDO de los mensajes. */
+      #${CAMPANA_ID} {position:relative;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;
         width:50px;height:50px;border:1px solid #c9d4db;border-radius:14px;background:#fff;color:#334f5f;
-        cursor:pointer;margin-left:10px;touch-action:manipulation; }
+        cursor:pointer;margin-left:10px;touch-action:manipulation;}
       #${CAMPANA_ID}[hidden] {display:none!important;}
-      #${CAMPANA_ID}:focus-visible { outline:3px solid #984a32;outline-offset:3px; }
-      #${CAMPANA_ID} svg { width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:1.9;
-        stroke-linecap:round;stroke-linejoin:round; }
-      #${CONTADOR_ID} { position:absolute;top:-7px;right:-8px;min-width:22px;height:22px;padding:1px 5px;
+      #${CAMPANA_ID}:focus-visible {outline:3px solid #984a32;outline-offset:3px;}
+      #${CAMPANA_ID} svg {width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
+      #${CONTADOR_ID} {position:absolute;top:-7px;right:-8px;min-width:22px;height:22px;padding:1px 5px;
         border-radius:16px;background:#984a32;color:#fff;display:flex;align-items:center;justify-content:center;
-        font-size:12px!important;line-height:1;font-weight:800;box-sizing:border-box; }
-      #${CONTADOR_ID}.hidden { display:none; }
-      /* Aviso inicial: panel gris oscuro, contraste alto y texto grande. */
-      #${DIALOGO_ID} {
-        width:min(94vw,600px);max-width:94vw;max-height:88dvh;overflow:auto;border:1px solid #76828d;
-        border-radius:20px;padding:28px;box-sizing:border-box;background:#3d4852;color:#fff;
-        box-shadow:0 22px 75px rgba(0,0,0,.45);
-      }
-      #${DIALOGO_ID}::backdrop { background:rgba(0,0,0,.70); }
-      #${DIALOGO_ID} .ecoNotEyebrow {color:#fff;font-weight:850;font-size:16px;letter-spacing:.045em;}
-      #${DIALOGO_ID} h2 {color:#fff;font-size:28px;line-height:1.25;margin:12px 0 16px;font-weight:850;}
-      #${DIALOGO_ID} p {color:#fff;font-size:19px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;}
-      #${DIALOGO_ID} .ecoNotResumen {
-        padding:19px 20px;background:#53616d;color:#fff;border:1px solid #81909a;
-        border-radius:15px;max-height:240px;overflow:auto;font-size:21px;line-height:1.55;font-weight:650;
-      }
-      #${DIALOGO_ID} .ecoNotBotones {display:flex;flex-wrap:wrap;justify-content:flex-end;gap:12px;margin-top:26px;}
-      #${DIALOGO_ID} button {min-height:54px;border-radius:11px;padding:12px 20px;font-size:18px;font-weight:800;cursor:pointer;}
-      #${DIALOGO_ID} .ecoNotPosponer {background:transparent;color:#fff;border:2px solid #d4dce2;}
-      #${DIALOGO_ID} .ecoNotAbrir {background:#fff;color:#273743;border:2px solid #fff;}
-      #${DIALOGO_ID} button:focus-visible {outline:3px solid #ffdbad;outline-offset:3px;}
-      /* Historial: tarjetas oscuras sin alterar estilos de actividades, familia o perfil. */
-      #peMensajesLista { gap:16px; }
-      #peMensajesLista .peMensajeItem {
-        background:#414d58!important;color:#fff!important;border:1px solid #667581;
-        border-radius:17px;padding:24px!important;box-shadow:0 6px 20px rgba(20,32,43,.16);
-        overflow-wrap:anywhere;opacity:1!important;
-      }
-      #peMensajesLista .peMensajeLeido {background:#515e69!important;opacity:1!important;}
+        font-size:12px!important;line-height:1;font-weight:800;box-sizing:border-box;}
+      #${CONTADOR_ID}.hidden {display:none;}
+
+      /* El aviso es discreto. El mensaje es el elemento dominante. */
+      #${DIALOGO_ID} {width:min(94vw,650px);max-width:94vw;max-height:88dvh;overflow-y:auto;
+        padding:24px;box-sizing:border-box;border:1px solid #a2adb6;border-radius:20px;
+        background:#edf1f4!important;color:#273943!important;box-shadow:0 22px 65px rgba(0,0,0,.35);}
+      #${DIALOGO_ID}::backdrop {background:rgba(0,0,0,.65);}
+      #${DIALOGO_ID} .ecoNotEyebrow {font-size:12px!important;font-weight:750;color:#5f6f7c!important;
+        line-height:1.3;letter-spacing:.05em;margin:0 0 5px;}
+      #${DIALOGO_ID} #ecoNotificacionesTitulo {font-size:15px!important;font-weight:650!important;
+        color:#566673!important;line-height:1.35;margin:0 0 13px;}
+      #${DIALOGO_ID} #ecoNotificacionesResumen {display:block!important;margin:0!important;
+        padding:25px 27px!important;background:#343e47!important;color:#fff!important;
+        border:2px solid #343e47!important;border-radius:18px!important;
+        font-size:29px!important;font-weight:800!important;line-height:1.48!important;
+        letter-spacing:.003em;white-space:pre-wrap;overflow-wrap:anywhere;
+        max-height:57dvh;overflow:auto;text-align:left;}
+      #${DIALOGO_ID} #ecoNotificacionesIntro {font-size:13px!important;font-weight:400!important;
+        color:#657482!important;line-height:1.45;margin:11px 2px 0!important;white-space:normal;}
+      #${DIALOGO_ID} .ecoNotBotones {display:flex;justify-content:flex-end;flex-wrap:wrap;
+        gap:11px;margin-top:23px;}
+      #${DIALOGO_ID} button {font-size:17px!important;min-height:52px;padding:11px 18px;
+        border-radius:11px;font-weight:800;cursor:pointer;}
+      #${DIALOGO_ID} .ecoNotPosponer {background:#fff;color:#3a4a55;border:2px solid #b7c3cb;}
+      #${DIALOGO_ID} .ecoNotAbrir {background:#343e47;color:#fff;border:2px solid #343e47;}
+      #${DIALOGO_ID} button:focus-visible {outline:3px solid #984a32;outline-offset:3px;}
+
+      /* Historial: burbujas grises oscuras, cuerpo blanco y grande. */
+      #peMensajesLista {gap:18px;}
+      #peMensajesLista .peMensajeItem {background:#343e47!important;color:#fff!important;
+        border:1px solid #677683!important;border-radius:18px!important;padding:24px!important;
+        box-shadow:0 7px 23px rgba(0,0,0,.15);opacity:1!important;overflow-wrap:anywhere;}
+      #peMensajesLista .peMensajeLeido {background:#48535e!important;opacity:1!important;}
       #peMensajesLista .peMensajeItem .peMensajeCabecera,
       #peMensajesLista .peMensajeItem .peMensajeCabecera strong,
       #peMensajesLista .peMensajeItem .peMensajeCabecera span,
       #peMensajesLista .peMensajeItem .peMensajeReferencia,
-      #peMensajesLista .peMensajeItem > div {
-        color:#fff!important;font-size:18px!important;line-height:1.45;
-      }
-      #peMensajesLista .peMensajeItem .peMensajeCabecera strong {font-weight:850!important;}
-      #peMensajesLista .peMensajeItem .peMensajeCuerpo {
-        color:#fff!important;font-size:21px!important;line-height:1.65!important;
-        margin:17px 0 20px;white-space:pre-wrap;overflow-wrap:anywhere;font-weight:600;
-      }
+      #peMensajesLista .peMensajeItem > div {color:#dce5eb!important;font-size:14px!important;line-height:1.4!important;}
+      #peMensajesLista .peMensajeItem .peMensajeCuerpo {color:#fff!important;
+        font-size:26px!important;font-weight:800!important;line-height:1.53!important;
+        margin:19px 0 23px!important;white-space:pre-wrap!important;overflow-wrap:anywhere;}
       #peMensajesLista .peMensajeItem .peMensajeLeer,
-      #peMensajesLista .peMensajeItem .peMensajeVer {
-        background:#fff!important;color:#293b48!important;border:2px solid #fff!important;
-        font-size:17px!important;line-height:1.35;font-weight:850;min-height:52px;
-        border-radius:11px;padding:12px 16px;white-space:normal;
-      }
-      #peMensajesLista .peMensajeItem .peMensajeLeer {background:#e7edf1!important;}
-      #peMensajesLista .peMensajeItem button:focus-visible {
-        outline:3px solid #ffdbad;outline-offset:3px;
-      }
-      /* Ventana «Ver mensaje completo»: mismo lenguaje de alto contraste. */
-      #peMensajeDialogCompleto {
-        background:#3d4852!important;color:#fff!important;border:1px solid #76828d;
-        border-radius:20px;padding:28px;box-shadow:0 20px 70px rgba(0,0,0,.38);
-      }
-      #peMensajeDialogCompleto h2 {font-size:28px!important;color:#fff!important;font-weight:850;}
-      #peMensajeDialogCompleto .peMensajeDialogMeta {font-size:17px!important;color:#eef3f6!important;}
-      #peMensajeDialogCompleto .peMensajeDialogTexto {
-        font-size:21px!important;color:#fff!important;line-height:1.65!important;font-weight:600;
-      }
-      #peMensajeDialogCompleto .peMensajeDialogCerrar {
-        font-size:18px!important;background:#fff!important;color:#283b48!important;
-        border:2px solid #fff;border-radius:11px;min-height:52px;
-      }
-      @media(max-width:480px) {
+      #peMensajesLista .peMensajeItem .peMensajeVer {font-size:17px!important;
+        min-height:51px;border-radius:11px;padding:12px 16px;font-weight:800!important;
+        line-height:1.35!important;background:#fff!important;color:#283843!important;
+        border:2px solid #fff!important;white-space:normal;}
+      #peMensajesLista .peMensajeItem button:focus-visible {outline:3px solid #ffdaae;outline-offset:3px;}
+
+      /* Diálogo de lectura completa: el texto es lo más importante. */
+      #peMensajeDialogCompleto {background:#edf1f4!important;color:#273943!important;
+        border:1px solid #a2adb6;border-radius:20px;padding:24px;}
+      #peMensajeDialogCompleto h2 {font-size:15px!important;color:#64727f!important;font-weight:650!important;}
+      #peMensajeDialogCompleto .peMensajeDialogMeta {font-size:13px!important;color:#64727f!important;}
+      #peMensajeDialogCompleto .peMensajeDialogTexto {background:#343e47!important;color:#fff!important;
+        border-radius:16px;padding:24px;margin:15px 0 6px;font-size:26px!important;
+        font-weight:800!important;line-height:1.55!important;white-space:pre-wrap;overflow-wrap:anywhere;}
+      #peMensajeDialogCompleto .peMensajeDialogCerrar {background:#343e47!important;color:#fff!important;
+        border:2px solid #343e47;border-radius:11px;font-size:17px!important;min-height:52px;}
+      @media (max-width:480px) {
         #${CAMPANA_ID} {width:46px;height:46px;margin-left:6px;}
-        #${DIALOGO_ID} {padding:22px;}
-        #${DIALOGO_ID} h2 {font-size:25px;}
-        #${DIALOGO_ID} .ecoNotResumen {font-size:20px;padding:17px;}
-        #${DIALOGO_ID} .ecoNotBotones button {flex:1 1 100%;font-size:17px;}
-        #peMensajesLista .peMensajeItem {padding:19px!important;}
-        #peMensajesLista .peMensajeItem .peMensajeCuerpo {font-size:20px!important;}
-        #peMensajeDialogCompleto {padding:22px;}
-        #peMensajeDialogCompleto .peMensajeDialogTexto {font-size:20px!important;}
-      }
-      @media(prefers-reduced-motion:reduce) {
-        #${DIALOGO_ID},#peMensajeDialogCompleto {scroll-behavior:auto;}
+        #${DIALOGO_ID} {padding:18px;}
+        #${DIALOGO_ID} #ecoNotificacionesResumen {font-size:26px!important;padding:22px!important;}
+        #${DIALOGO_ID} .ecoNotBotones button {flex:1 1 100%;font-size:17px!important;}
+        #peMensajesLista .peMensajeItem {padding:20px!important;}
+        #peMensajesLista .peMensajeItem .peMensajeCuerpo {font-size:24px!important;}
+        #peMensajeDialogCompleto {padding:18px;}
+        #peMensajeDialogCompleto .peMensajeDialogTexto {font-size:24px!important;padding:20px;}
       }
     `;
     document.head.appendChild(css);
@@ -175,7 +166,7 @@
     despues.addEventListener('click',()=>dlg.close());
     const abrir = document.createElement('button'); abrir.type='button'; abrir.className='ecoNotAbrir'; abrir.textContent='Ver mensajes';
     abrir.addEventListener('click',abrirMensajes);
-    acciones.append(despues,abrir); dlg.append(ceja,titulo,intro,resumen,acciones);
+    acciones.append(despues,abrir); dlg.append(ceja,titulo,resumen,intro,acciones);
     document.body.appendChild(dlg); return dlg;
   }
 
@@ -200,7 +191,7 @@
     const dlg = crearDialogo();
     porId('ecoNotificacionesTitulo').textContent = informacion.length===1
       ? 'Tienes un mensaje pendiente' : 'Tienes '+informacion.length+' mensajes pendientes';
-    porId('ecoNotificacionesIntro').textContent = informacion.some(x=>x.prioridad)?'Tienes una comunicación prioritaria de Recursos Humanos. Puedes consultarla ahora o después.':'Recursos Humanos tiene comunicaciones para ti. Puedes consultarlas ahora o después en Mensajes.';
+    porId('ecoNotificacionesIntro').textContent = informacion.some(x=>x.prioridad)?'Mensaje prioritario de Recursos Humanos':'Mensaje de Recursos Humanos';
     const primero=informacion[0];
     const texto=String(primero?.mensaje||'').trim();
     porId('ecoNotificacionesResumen').textContent = texto

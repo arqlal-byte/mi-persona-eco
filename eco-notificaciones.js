@@ -49,21 +49,83 @@
         border-radius:16px;background:#984a32;color:#fff;display:flex;align-items:center;justify-content:center;
         font-size:12px!important;line-height:1;font-weight:800;box-sizing:border-box; }
       #${CONTADOR_ID}.hidden { display:none; }
-      #${DIALOGO_ID} { width:min(92vw,540px);max-width:92vw;max-height:85dvh;overflow:auto;border:0;
-        border-radius:17px;padding:24px;box-sizing:border-box;background:#fff;color:#1d303b;
-        box-shadow:0 18px 60px rgba(0,0,0,.25); }
-      #${DIALOGO_ID}::backdrop { background:rgba(0,0,0,.55); }
-      #${DIALOGO_ID} .ecoNotEyebrow {color:#984a32;font-weight:800;font-size:13px;letter-spacing:.04em;}
-      #${DIALOGO_ID} h2 {font-size:23px;line-height:1.25;margin:9px 0 12px;}
-      #${DIALOGO_ID} p {font-size:16px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;}
-      #${DIALOGO_ID} .ecoNotResumen {padding:12px;background:#f3f6f7;border:1px solid #dce5e9;
-        border-radius:11px;max-height:160px;overflow:auto;}
-      #${DIALOGO_ID} .ecoNotBotones {display:flex;flex-wrap:wrap;justify-content:flex-end;gap:10px;margin-top:22px;}
-      #${DIALOGO_ID} button {min-height:44px;border-radius:10px;padding:10px 14px;font-size:15px;font-weight:700;cursor:pointer;}
-      #${DIALOGO_ID} .ecoNotPosponer {background:#fff;color:#344f5e;border:1px solid #bccbd2;}
-      #${DIALOGO_ID} .ecoNotAbrir {background:#984a32;color:#fff;border:1px solid #984a32;}
-      @media(max-width:480px) {#${CAMPANA_ID} {width:46px;height:46px;margin-left:6px;}
-        #${DIALOGO_ID} {padding:20px;} #${DIALOGO_ID} .ecoNotBotones button {flex:1 1 auto;} }
+      /* Aviso inicial: panel gris oscuro, contraste alto y texto grande. */
+      #${DIALOGO_ID} {
+        width:min(94vw,600px);max-width:94vw;max-height:88dvh;overflow:auto;border:1px solid #76828d;
+        border-radius:20px;padding:28px;box-sizing:border-box;background:#3d4852;color:#fff;
+        box-shadow:0 22px 75px rgba(0,0,0,.45);
+      }
+      #${DIALOGO_ID}::backdrop { background:rgba(0,0,0,.70); }
+      #${DIALOGO_ID} .ecoNotEyebrow {color:#fff;font-weight:850;font-size:16px;letter-spacing:.045em;}
+      #${DIALOGO_ID} h2 {color:#fff;font-size:28px;line-height:1.25;margin:12px 0 16px;font-weight:850;}
+      #${DIALOGO_ID} p {color:#fff;font-size:19px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;}
+      #${DIALOGO_ID} .ecoNotResumen {
+        padding:19px 20px;background:#53616d;color:#fff;border:1px solid #81909a;
+        border-radius:15px;max-height:240px;overflow:auto;font-size:21px;line-height:1.55;font-weight:650;
+      }
+      #${DIALOGO_ID} .ecoNotBotones {display:flex;flex-wrap:wrap;justify-content:flex-end;gap:12px;margin-top:26px;}
+      #${DIALOGO_ID} button {min-height:54px;border-radius:11px;padding:12px 20px;font-size:18px;font-weight:800;cursor:pointer;}
+      #${DIALOGO_ID} .ecoNotPosponer {background:transparent;color:#fff;border:2px solid #d4dce2;}
+      #${DIALOGO_ID} .ecoNotAbrir {background:#fff;color:#273743;border:2px solid #fff;}
+      #${DIALOGO_ID} button:focus-visible {outline:3px solid #ffdbad;outline-offset:3px;}
+      /* Historial: tarjetas oscuras sin alterar estilos de actividades, familia o perfil. */
+      #peMensajesLista { gap:16px; }
+      #peMensajesLista .peMensajeItem {
+        background:#414d58!important;color:#fff!important;border:1px solid #667581;
+        border-radius:17px;padding:24px!important;box-shadow:0 6px 20px rgba(20,32,43,.16);
+        overflow-wrap:anywhere;opacity:1!important;
+      }
+      #peMensajesLista .peMensajeLeido {background:#515e69!important;opacity:1!important;}
+      #peMensajesLista .peMensajeItem .peMensajeCabecera,
+      #peMensajesLista .peMensajeItem .peMensajeCabecera strong,
+      #peMensajesLista .peMensajeItem .peMensajeCabecera span,
+      #peMensajesLista .peMensajeItem .peMensajeReferencia,
+      #peMensajesLista .peMensajeItem > div {
+        color:#fff!important;font-size:18px!important;line-height:1.45;
+      }
+      #peMensajesLista .peMensajeItem .peMensajeCabecera strong {font-weight:850!important;}
+      #peMensajesLista .peMensajeItem .peMensajeCuerpo {
+        color:#fff!important;font-size:21px!important;line-height:1.65!important;
+        margin:17px 0 20px;white-space:pre-wrap;overflow-wrap:anywhere;font-weight:600;
+      }
+      #peMensajesLista .peMensajeItem .peMensajeLeer,
+      #peMensajesLista .peMensajeItem .peMensajeVer {
+        background:#fff!important;color:#293b48!important;border:2px solid #fff!important;
+        font-size:17px!important;line-height:1.35;font-weight:850;min-height:52px;
+        border-radius:11px;padding:12px 16px;white-space:normal;
+      }
+      #peMensajesLista .peMensajeItem .peMensajeLeer {background:#e7edf1!important;}
+      #peMensajesLista .peMensajeItem button:focus-visible {
+        outline:3px solid #ffdbad;outline-offset:3px;
+      }
+      /* Ventana «Ver mensaje completo»: mismo lenguaje de alto contraste. */
+      #peMensajeDialogCompleto {
+        background:#3d4852!important;color:#fff!important;border:1px solid #76828d;
+        border-radius:20px;padding:28px;box-shadow:0 20px 70px rgba(0,0,0,.38);
+      }
+      #peMensajeDialogCompleto h2 {font-size:28px!important;color:#fff!important;font-weight:850;}
+      #peMensajeDialogCompleto .peMensajeDialogMeta {font-size:17px!important;color:#eef3f6!important;}
+      #peMensajeDialogCompleto .peMensajeDialogTexto {
+        font-size:21px!important;color:#fff!important;line-height:1.65!important;font-weight:600;
+      }
+      #peMensajeDialogCompleto .peMensajeDialogCerrar {
+        font-size:18px!important;background:#fff!important;color:#283b48!important;
+        border:2px solid #fff;border-radius:11px;min-height:52px;
+      }
+      @media(max-width:480px) {
+        #${CAMPANA_ID} {width:46px;height:46px;margin-left:6px;}
+        #${DIALOGO_ID} {padding:22px;}
+        #${DIALOGO_ID} h2 {font-size:25px;}
+        #${DIALOGO_ID} .ecoNotResumen {font-size:20px;padding:17px;}
+        #${DIALOGO_ID} .ecoNotBotones button {flex:1 1 100%;font-size:17px;}
+        #peMensajesLista .peMensajeItem {padding:19px!important;}
+        #peMensajesLista .peMensajeItem .peMensajeCuerpo {font-size:20px!important;}
+        #peMensajeDialogCompleto {padding:22px;}
+        #peMensajeDialogCompleto .peMensajeDialogTexto {font-size:20px!important;}
+      }
+      @media(prefers-reduced-motion:reduce) {
+        #${DIALOGO_ID},#peMensajeDialogCompleto {scroll-behavior:auto;}
+      }
     `;
     document.head.appendChild(css);
   }
